@@ -17,4 +17,12 @@ export class AuthMemoryRepository implements AuthRepository {
       setTimeout(resolve, timeout);
     });
   }
+
+  public async login(): Promise<void> {
+    await this.delay();
+
+    const isSuccessfulRequest = Math.random() < this.percentageSuccessRating;
+
+    if (!isSuccessfulRequest) throw new Error("Bad credentials");
+  }
 }
