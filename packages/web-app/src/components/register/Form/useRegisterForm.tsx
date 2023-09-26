@@ -2,10 +2,12 @@ import { useState } from "react";
 import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
 import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
 import { RegisterRequest } from "@shared/contract/auth";
+import { useRouter } from "next/navigation";
 
 const authService: AuthRepository = new AuthMemoryRepository();
 
 export const useRegisterForm = () => {
+  const router = useRouter();
   const [isLoading, setFormLoading] = useState<boolean>(false);
 
   return {
@@ -24,6 +26,7 @@ export const useRegisterForm = () => {
      */
     success: () => {
       setFormLoading(false);
+      router.push("/");
       return "Your account has been created";
     },
     /**
