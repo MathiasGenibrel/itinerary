@@ -1,43 +1,32 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { FormEvent, useState } from "react";
-import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
-import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
 import { toast } from "sonner";
 import { PasswordInput } from "./PasswordInput";
+import { useRegisterForm } from "./useRegisterForm";
 
 export const RegisterForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);
 
+  // States for controlled inputs
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const authService: AuthRepository = new AuthMemoryRepository();
+  // Toast handler, allows you to manage all aspects of the toast, displaying loading, errors and success
+  const toastHandler = useRegisterForm(setFormLoading);
 
   const formHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Notify user of advancement of his request
     toast.promise(
-      () => {
-        setFormLoading(true);
-        return authService.register({
-          email,
-          password,
-          username,
-        });
-      },
+      async () => toastHandler.promise({ email, password, username }),
       {
         loading: "Account creation in progress...",
-        success: () => {
-          setFormLoading(false);
-          return "Your account has been created";
-        },
-        error: (data: Error) => {
-          setFormLoading(false);
-          return data.message;
-        },
+        success: toastHandler.success,
+        error: toastHandler.error,
       },
     );
   };
