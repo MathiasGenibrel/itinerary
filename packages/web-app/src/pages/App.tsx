@@ -1,10 +1,8 @@
-import { Link } from 'react-router-dom';
-import { ApplicationPath } from './router.tsx';
-
+import BikeMap from '../components/bikeMap/BikeMap';
 export const App = () => {
   return (
     <>
-      <p>Coucou Mathias</p>
+      <BikeMap />
     </>
   );
 };
