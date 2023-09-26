@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
 import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
-import { RegisterRequest } from "@shared/contract/auth";
+import { LoginResponse, RegisterRequest } from "@shared/contract/auth";
 import { useRouter } from "next/navigation";
 
 const authService: AuthRepository = new AuthMemoryRepository();
@@ -17,14 +17,19 @@ export const useRegisterForm = () => {
      * Sends data to authentication repository to create account
      * @param authCredential - User data for account creation
      */
-    promise: (authCredential: RegisterRequest) => {
+    promise: async (authCredential: RegisterRequest) => {
       setFormLoading(true);
-      return authService.register(authCredential);
+      await authService.register(authCredential);
+      return await authService.login({
+        email: authCredential.email,
+        password: authCredential.password,
+      });
     },
     /**
      * Changes toast state, to success state and redirect user to home page.
      */
-    success: () => {
+    success: (data: LoginResponse) => {
+      console.log("[DEBUG] Register Request : ", data);
       setFormLoading(false);
       router.push("/");
       return "Your account has been created";
