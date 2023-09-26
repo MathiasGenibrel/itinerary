@@ -1,28 +1,62 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { PasswordInput } from "./PasswordInput";
 import { useRegisterForm } from "./useRegisterForm";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const MIN_PASSWORD_LENGTH = 1;
+
+type Inputs = {
+  email: string;
+  username: string;
+  password: string;
+  confirm: string;
+};
+
+const schema = z
+  .object({
+    email: z.string().email(),
+    username: z.string().max(64),
+    password: z.string().min(MIN_PASSWORD_LENGTH).max(64),
+    confirm: z.string().min(MIN_PASSWORD_LENGTH).max(64),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords don't match",
+    path: ["confirm"],
+  });
 
 export const RegisterForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);
 
-  // States for controlled inputs
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      email: "",
+      username: "",
+      password: "",
+      confirm: "",
+    },
+    resolver: zodResolver(schema),
+  });
 
   // Toast handler, allows you to manage all aspects of the toast, displaying loading, errors and success
   const toastHandler = useRegisterForm(setFormLoading);
 
-  const formHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const formHandler = async (credential: Inputs) => {
     // Notify user of advancement of his request
     toast.promise(
-      async () => toastHandler.promise({ email, password, username }),
+      async () =>
+        toastHandler.promise({
+          email: credential.email,
+          password: credential.password,
+          username: credential.username,
+        }),
       {
         loading: "Account creation in progress...",
         success: toastHandler.success,
@@ -32,36 +66,68 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form className={"flex flex-col gap-4"} onSubmit={formHandler}>
+    <form
+      className={"flex flex-col gap-4"}
+      onSubmit={handleSubmit((data) => formHandler(data))}
+    >
+      <input type="submit" />
       <section className={"flex flex-col gap-2"}>
-        <Input
-          type="email"
-          label="Email"
-          inputMode="email"
-          placeholder="Enter your email"
-          isRequired={true}
-          value={email}
-          onValueChange={setEmail}
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <Input
+              type="email"
+              label="Email"
+              inputMode="email"
+              placeholder="Enter your email"
+              isInvalid={!!errors.email}
+              errorMessage={errors.email?.message}
+              {...field}
+            />
+          )}
         />
-        <Input
-          type="text"
-          label="Username"
-          placeholder="Enter your username"
-          isRequired={true}
-          value={username}
-          onValueChange={setUsername}
+        <Controller
+          name="username"
+          control={control}
+          render={({ field }) => (
+            <Input
+              type="text"
+              label="Username"
+              placeholder="Enter your username"
+              isInvalid={!!errors.username}
+              errorMessage={errors.username?.message}
+              {...field}
+            />
+          )}
         />
-        <PasswordInput
-          label="Password"
-          placeholder="Enter your password"
-          value={password}
-          setValue={setPassword}
+        <Controller
+          name="password"
+          control={control}
+          render={({ field }) => (
+            <Input
+              type="password"
+              label="Password"
+              placeholder="Enter your password"
+              isInvalid={!!errors.password}
+              errorMessage={errors.password?.message}
+              {...field}
+            />
+          )}
         />
-        <PasswordInput
-          label="Confirm Password"
-          placeholder="Confirm your password"
-          value={confirmPassword}
-          setValue={setConfirmPassword}
+        <Controller
+          name="confirm"
+          control={control}
+          render={({ field }) => (
+            <Input
+              type="password"
+              label="Confirm Password"
+              placeholder="Confirm your password"
+              isInvalid={!!errors.confirm}
+              errorMessage={errors.confirm?.message}
+              {...field}
+            />
+          )}
         />
       </section>
 
