@@ -13,9 +13,9 @@ export class AuthMemoryRepository implements AuthRepository {
     if (!isSuccessfulRequest) throw new Error("This username is already used");
   }
 
-  private delay(timeout: number = 2e3): Promise<void> {
+  private delay(): Promise<void> {
     return new Promise((resolve) => {
-      setTimeout(resolve, timeout);
+      setTimeout(resolve, this.timeout);
     });
   }
 
