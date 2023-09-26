@@ -1,14 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
 import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
 import { RegisterRequest } from "@shared/contract/auth";
 
 const authService: AuthRepository = new AuthMemoryRepository();
 
-export const useRegisterForm = (
-  setFormLoading: Dispatch<SetStateAction<boolean>>,
-) => {
+export const useRegisterForm = () => {
+  const [isLoading, setFormLoading] = useState<boolean>(false);
+
   return {
+    isLoading,
     /**
      * Changes the state of the button to loading state.
      * Sends data to authentication repository to create account

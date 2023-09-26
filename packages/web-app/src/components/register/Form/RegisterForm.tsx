@@ -1,41 +1,17 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { useState } from "react";
 import { toast } from "sonner";
 import { useRegisterForm } from "./useRegisterForm";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const MIN_PASSWORD_LENGTH = 1;
-
-type Inputs = {
-  email: string;
-  username: string;
-  password: string;
-  confirm: string;
-};
-
-const schema = z
-  .object({
-    email: z.string().email(),
-    username: z.string().max(64),
-    password: z.string().min(MIN_PASSWORD_LENGTH).max(64),
-    confirm: z.string().min(MIN_PASSWORD_LENGTH).max(64),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match",
-    path: ["confirm"],
-  });
+import { RegisterInputs, schema } from "./schema";
 
 export const RegisterForm = () => {
-  const [isLoading, setFormLoading] = useState<boolean>(false);
-
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<RegisterInputs>({
     defaultValues: {
       email: "",
       username: "",
@@ -46,21 +22,21 @@ export const RegisterForm = () => {
   });
 
   // Toast handler, allows you to manage all aspects of the toast, displaying loading, errors and success
-  const toastHandler = useRegisterForm(setFormLoading);
+  const registerFormHandler = useRegisterForm();
 
-  const formHandler = async (credential: Inputs) => {
+  const formHandler = async (credential: RegisterInputs) => {
     // Notify user of advancement of his request
     toast.promise(
       async () =>
-        toastHandler.promise({
+        registerFormHandler.promise({
           email: credential.email,
           password: credential.password,
           username: credential.username,
         }),
       {
         loading: "Account creation in progress...",
-        success: toastHandler.success,
-        error: toastHandler.error,
+        success: registerFormHandler.success,
+        error: registerFormHandler.error,
       },
     );
   };
@@ -131,7 +107,11 @@ export const RegisterForm = () => {
         />
       </section>
 
-      <Button color="primary" type={"submit"} isLoading={isLoading}>
+      <Button
+        color="primary"
+        type={"submit"}
+        isLoading={registerFormHandler.isLoading}
+      >
         Create an account
       </Button>
     </form>
