@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
@@ -46,7 +48,6 @@ export const RegisterForm = () => {
       className={"flex flex-col gap-4"}
       onSubmit={handleSubmit((data) => formHandler(data))}
     >
-      <input type="submit" />
       <section className={"flex flex-col gap-2"}>
         <Controller
           name="email"
