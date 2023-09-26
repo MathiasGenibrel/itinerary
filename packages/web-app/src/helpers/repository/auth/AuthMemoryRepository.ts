@@ -1,3 +1,4 @@
+import { LoginResponse } from '@shared/contract/auth';
 import { AuthRepository } from "./AuthRepository";
 
 export class AuthMemoryRepository implements AuthRepository {
@@ -18,11 +19,17 @@ export class AuthMemoryRepository implements AuthRepository {
     });
   }
 
-  public async login(): Promise<void> {
+  public async login(): Promise<LoginResponse> {
     await this.delay();
 
     const isSuccessfulRequest = Math.random() < this.percentageSuccessRating;
 
     if (!isSuccessfulRequest) throw new Error("Bad credentials");
+    return {
+      id: 1,
+      email: "notch@minecraft.net",
+      username: "notch",
+      token: "Never dig down!",
+    }
   }
 }

@@ -33,12 +33,13 @@ export default function Page() {
         return authService.login({
           email,
           password
-        });
+        })
       },
       {
         loading: "Connecting...",
-        success: () => {
+        success: (data) => {
           setFormLoading(false);
+          localStorage.setItem('user', JSON.stringify(data));
           return "Connection successfully";
         },
         error: (data: Error) => {
@@ -60,6 +61,7 @@ export default function Page() {
               <Input
                 type="email"
                 label="Email"
+                name="email"
                 inputMode="email"
                 placeholder="Enter your email"
                 isRequired={true}
@@ -69,6 +71,7 @@ export default function Page() {
               <Input
                 type={isVisiblePassword ? "text" : "password"}
                 label="Password"
+                name="password"
                 placeholder="Enter your password"
                 isRequired={true}
                 endContent={
