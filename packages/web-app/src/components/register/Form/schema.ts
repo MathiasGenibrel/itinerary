@@ -9,7 +9,7 @@ const MIN_PASSWORD_LENGTH = 12;
  * - 1 Special character
  */
 const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.-_]+$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.-_])[A-Za-z\d@$!%*?&.-_]+$/;
 
 export interface RegisterInputs {
   email: string;
@@ -28,7 +28,7 @@ export const schema = z
       .max(64)
       .refine((password) => PASSWORD_REGEX.test(password), {
         message:
-          "The password must contain at least one upper case letter, one lower case letter, one number and one special character (@$!%*?&.-).",
+          "The password must contain at least one upper case letter, one lower case letter, one number and one special character (@$!%*?&.-_).",
       }),
     confirm: z.string().trim().min(MIN_PASSWORD_LENGTH).max(64),
   })
