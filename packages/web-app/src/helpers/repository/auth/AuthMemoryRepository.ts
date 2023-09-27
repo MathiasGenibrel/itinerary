@@ -22,18 +22,14 @@ export class AuthMemoryRepository implements AuthRepository {
     return {
       id: 1,
       email: "notch@minecraft.net",
-      username: "notch",
+      username: "Notch",
       token: "Never dig down!",
     };
   }
 
-  private delay(): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, this.timeout);
-    });
-  }
-
-  public async updateCredentials(authCredential : LoginResponse): Promise<LoginResponse> {
+  public async updateCredentials(
+    authCredential: LoginResponse,
+  ): Promise<LoginResponse> {
     await this.delay();
 
     const isSuccessfulRequest = Math.random() < this.percentageSuccessRating;
@@ -44,6 +40,12 @@ export class AuthMemoryRepository implements AuthRepository {
       email: authCredential.email,
       username: authCredential.username,
       token: authCredential.token,
-    }
+    };
+  }
+
+  private delay(): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(resolve, this.timeout);
+    });
   }
 }
