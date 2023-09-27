@@ -24,8 +24,8 @@ export interface VerifyRequest {
   token: string
 }
 
-export interface AccountUpdateRequest {
-  email: string
-  username: string
-  token: string
-}
+// export interface AccountUpdateRequest {
+//   email: string
+//   username: string
+//   token: string
+// }

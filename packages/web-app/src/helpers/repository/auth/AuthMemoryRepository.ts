@@ -32,4 +32,33 @@ export class AuthMemoryRepository implements AuthRepository {
       token: "Never dig down!",
     }
   }
+
+  public async updateCredentials(authCredential : LoginResponse): Promise<LoginResponse> {
+    await this.delay();
+
+    const isSuccessfulRequest = Math.random() < this.percentageSuccessRating;
+
+    if (!isSuccessfulRequest) throw new Error("Nope!");
+
+    // TODO: UNCOMMENT when AuthService will be ok
+
+    // fetch("http://localhost:4000/api/updateCredentials")
+    // .then((response) => { return response.json(); })
+    // .then((response) => {
+    //   return {
+    //     id: response.id,
+    //     email: response.email,
+    //     username: response.username,
+    //     token: response.token,
+    //   }
+    // });
+
+    // TODO: REMOVE when AuthService will be ok
+    return {
+      id: authCredential.id,
+      email: authCredential.email,
+      username: authCredential.username,
+      token: authCredential.token,
+    }
+  }
 }
