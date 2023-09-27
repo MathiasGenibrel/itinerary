@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardBody } from "@nextui-org/card";
 import { Link } from "@nextui-org/link";
 import { Toaster } from "sonner";
