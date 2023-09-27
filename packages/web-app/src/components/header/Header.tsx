@@ -29,12 +29,14 @@ export function Header() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link to={ApplicationPath.LOGIN} aria-current="page">
+          <Link to={ApplicationPath.DASHBOARD} aria-current="page">
             Dashboard
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link to={ApplicationPath.PROFILE}>Profile</Link>
+          <Link to={ApplicationPath.PROFILE} aria-current="page">
+            Profile
+          </Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
