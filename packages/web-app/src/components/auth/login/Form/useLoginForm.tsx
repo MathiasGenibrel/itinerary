@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
-import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
-import { LoginResponse, RegisterRequest } from "@shared/contract/auth";
-import { useAuthDispatcher } from "../../../context/auth/hooks/useAuthDispatcher.tsx";
-import { AuthActionType } from "../../../context/auth/types.ts";
+import { AuthRepository } from "../../../../helpers/repository/auth/AuthRepository.ts";
+import { AuthMemoryRepository } from "../../../../helpers/repository/auth/AuthMemoryRepository.ts";
+import { LoginRequest, LoginResponse } from "@shared/contract/auth.ts";
+import { useAuthDispatcher } from "../../../../context/auth/hooks/useAuthDispatcher.tsx";
+import { AuthActionType } from "../../../../context/auth/types.ts";
 import { useNavigate } from "react-router-dom";
-import { ApplicationPath } from "../../../pages/router.tsx";
+import { ApplicationPath } from "../../../../pages/router.tsx";
 
 const authService: AuthRepository = new AuthMemoryRepository();
 
-export const useRegisterForm = () => {
+export const useLoginForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);
   const { dispatch } = useAuthDispatcher();
   const navigate = useNavigate();
@@ -21,13 +21,9 @@ export const useRegisterForm = () => {
      * Sends data to authentication repository to create account
      * @param authCredential - User data for account creation
      */
-    promise: async (authCredential: RegisterRequest) => {
+    promise: async (authCredential: LoginRequest) => {
       setFormLoading(true);
-      await authService.register(authCredential);
-      return await authService.login({
-        email: authCredential.email,
-        password: authCredential.password,
-      });
+      return await authService.login(authCredential);
     },
     /**
      * Changes toast state, to success state and redirect user to home page.

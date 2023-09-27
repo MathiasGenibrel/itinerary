@@ -1,7 +1,7 @@
 import { Card, CardBody } from "@nextui-org/card";
 import { Link } from "@nextui-org/link";
 import { Toaster } from "sonner";
-import { RegisterForm } from "../../components/register/Form/RegisterForm.tsx";
+import { RegisterForm } from "../../components/auth/register/Form/RegisterForm.tsx";
 
 export default function Page() {
   return (
