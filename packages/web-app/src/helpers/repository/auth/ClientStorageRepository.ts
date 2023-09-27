@@ -17,15 +17,15 @@ export class ClientStorageRepository {
    * Save credential in client storage, this storage can be anything that respects Storage interface.
    * @param credential - User credential
    */
-  public save(credential: LoginResponse): void {
+  public saveCredential(credential: LoginResponse): void {
     this.storage.setItem("credential", JSON.stringify(credential));
   }
 
   /**
    * Get credential from client storage.
    */
-  public get(): AuthState {
-    const credential = this.getCredential();
+  public getCredential(): AuthState {
+    const credential = this.getCredentialFromStorage();
     return {
       isAuthenticated: !!credential,
       user: credential ?? null,
@@ -35,7 +35,7 @@ export class ClientStorageRepository {
   /**
    * Remove credential from client storage
    */
-  public remove(): void {
+  public deleteCredential(): void {
     this.storage.removeItem(this.key);
   }
 
@@ -58,7 +58,7 @@ export class ClientStorageRepository {
    * Get credential from storage and check is integrity.
    * @private
    */
-  private getCredential(): LoginResponse | void {
+  private getCredentialFromStorage(): LoginResponse | void {
     const credential = this.storage.getItem(this.key);
     if (!credential) return;
 

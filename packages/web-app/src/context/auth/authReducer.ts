@@ -9,7 +9,7 @@ export const authReducer = (
 ): AuthState => {
   switch (action.type) {
     case AuthActionType.LOGIN:
-      clientStorage.save(action.payload.user);
+      clientStorage.saveCredential(action.payload.user);
       return {
         ...state,
         isAuthenticated: true,
@@ -17,7 +17,7 @@ export const authReducer = (
       };
 
     case AuthActionType.LOGOUT:
-      clientStorage.remove();
+      clientStorage.deleteCredential();
       return {
         ...state,
         isAuthenticated: false,
