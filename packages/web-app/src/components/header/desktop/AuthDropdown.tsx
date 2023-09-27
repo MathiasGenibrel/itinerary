@@ -69,9 +69,8 @@ export const AuthDropdown: FC<Props> = ({ user }) => {
           <DropdownItem
             key="help_and_feedback"
             startContent={<QuestionCircle />}
-            onPress={() => navigate(ApplicationPath.HOME)}
+            onPress={() => navigate(ApplicationPath.HELP)}
           >
-            {/*  TODO Add "ApplicationPath.HELP" to redirect user to Help center. */}
             Help & Feedback
           </DropdownItem>
           <DropdownItem

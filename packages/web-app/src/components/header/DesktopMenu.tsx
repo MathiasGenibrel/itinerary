@@ -1,7 +1,5 @@
-import { NavbarBrand, NavbarContent, NavbarMenuItem } from "@nextui-org/navbar";
+import { NavbarContent, NavbarMenuItem } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
-import { ApplicationPath } from "../../pages/router.tsx";
-import { Image } from "@nextui-org/image";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Item } from "./Header.tsx";
 import { FC } from "react";
@@ -20,11 +18,6 @@ export const DesktopMenu: FC<Props> = ({ items }) => {
 
   return (
     <>
-      <NavbarBrand>
-        <Link href={ApplicationPath.HOME}>
-          <Image src="/logo.svg" alt="Logo" width={40} height={40} />
-        </Link>
-      </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-3" justify="center">
         {items.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
