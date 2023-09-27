@@ -6,43 +6,45 @@ import {
   NavbarItem,
 } from '@nextui-org/navbar';
 import { Button } from '@nextui-org/button';
-import { Link } from '@nextui-org/link';
+// import { Link } from '@nextui-org/link';
 import { Image } from '@nextui-org/image';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ApplicationPath } from '../../pages/router';
 
-export default function Header() {
+export function Header() {
   const [active, setActive] = useState<string>('home');
 
   return (
     <Navbar>
       <NavbarBrand>
-        <Link href="/" aria-current="page">
+        <Link to={ApplicationPath.HOME} aria-current="page">
           <Image src="/logo.svg" alt="Logo" width={75} height={75} />
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-3" justify="center">
         <NavbarItem>
-          <Link href="/" aria-current="page">
+          <Link to={ApplicationPath.HOME} aria-current="page">
             Home
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href="/login" aria-current="page">
+          <Link to={ApplicationPath.LOGIN} aria-current="page">
             Dashboard
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href="/profile">Profile</Link>
+          <Link to={ApplicationPath.PROFILE}>Profile</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem isActive>
-          <Link href="/login">Login</Link>
+          <Link to={ApplicationPath.LOGIN}>Login</Link>
         </NavbarItem>
         <NavbarItem>
           <Button
             as={Link}
-            href="/register"
+            href={ApplicationPath.REGISTER}
             variant="flat"
             className="rounded-3xl bg-blue-600 text-white"
           >
