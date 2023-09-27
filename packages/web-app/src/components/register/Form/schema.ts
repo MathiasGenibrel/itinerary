@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const MIN_PASSWORD_LENGTH = 1;
+const MIN_PASSWORD_LENGTH = 12;
 /**
  * Password Regex with minimal requirement:
  * - 1 Upper letter
