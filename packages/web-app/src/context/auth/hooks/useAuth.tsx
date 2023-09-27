@@ -1,6 +1,9 @@
-import { useContext } from "react";
-import { AuthContext } from "../AuthProvider.tsx";
+import {useContext} from "react";
+import {AuthContext} from "../AuthProvider.tsx";
 
+/**
+ * Enables access to authentication context data
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -1,43 +1,41 @@
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { toast } from "sonner";
-import { useRegisterForm } from "./useRegisterForm";
+import { useLoginForm } from "./useLoginForm.tsx";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterInputs, schema } from "./schema";
+import { LoginInputs, schema } from "../../schema.ts";
 import { FC } from "react";
+import { PasswordInput } from "../../register/Form/PasswordInput.tsx";
 
-export const RegisterForm: FC = () => {
+export const LoginForm: FC = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterInputs>({
+  } = useForm<LoginInputs>({
     defaultValues: {
       email: "",
-      username: "",
       password: "",
-      confirm: "",
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema.login),
   });
 
   // Toast handler, allows you to manage all aspects of the toast, displaying loading, errors and success
-  const registerFormHandler = useRegisterForm();
+  const loginFormHandler = useLoginForm();
 
-  const formHandler = async (credential: RegisterInputs) => {
-    // Notify user of advancement of his request
+  const formHandler = async (credential: LoginInputs) => {
+    // Notify users about the status and advancement of their request.
     toast.promise(
       async () =>
-        registerFormHandler.promise({
+        loginFormHandler.promise({
           email: credential.email,
           password: credential.password,
-          username: credential.username,
         }),
       {
         loading: "Account creation in progress...",
-        success: registerFormHandler.success,
-        error: registerFormHandler.error,
+        success: loginFormHandler.success,
+        error: loginFormHandler.error,
       },
     );
   };
@@ -64,43 +62,15 @@ export const RegisterForm: FC = () => {
           )}
         />
         <Controller
-          name="username"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="text"
-              label="Username"
-              placeholder="Enter your username"
-              isInvalid={!!errors.username}
-              errorMessage={errors.username?.message}
-              {...field}
-            />
-          )}
-        />
-        <Controller
           name="password"
           control={control}
           render={({ field }) => (
-            <Input
-              type="password"
+            <PasswordInput
               label="Password"
               placeholder="Enter your password"
+              autoComplete="current-password"
               isInvalid={!!errors.password}
               errorMessage={errors.password?.message}
-              {...field}
-            />
-          )}
-        />
-        <Controller
-          name="confirm"
-          control={control}
-          render={({ field }) => (
-            <Input
-              type="password"
-              label="Confirm Password"
-              placeholder="Confirm your password"
-              isInvalid={!!errors.confirm}
-              errorMessage={errors.confirm?.message}
               {...field}
             />
           )}
@@ -110,7 +80,7 @@ export const RegisterForm: FC = () => {
       <Button
         color="primary"
         type={"submit"}
-        isLoading={registerFormHandler.isLoading}
+        isLoading={loginFormHandler.isLoading}
       >
         Create an account
       </Button>
