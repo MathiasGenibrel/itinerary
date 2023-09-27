@@ -12,7 +12,7 @@ export default function Page() {
           <h1 className={"text-3xl font-medium text-center"}>Sign up</h1>
           <RegisterForm />
           <span>
-            Don't have an account ?{" "}
+            Already have an account ?{" "}
             <Link href={"/login"}>Sign in to Itinerary</Link>
           </span>
         </CardBody>

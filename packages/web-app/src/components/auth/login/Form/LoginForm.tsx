@@ -82,7 +82,7 @@ export const LoginForm: FC = () => {
         type={"submit"}
         isLoading={loginFormHandler.isLoading}
       >
-        Create an account
+        Connect
       </Button>
     </form>
   );
