@@ -18,7 +18,7 @@ export class ClientStorageRepository {
    * @param credential - User credential
    */
   public saveCredential(credential: LoginResponse): void {
-    this.storage.setItem("credential", JSON.stringify(credential));
+    this.storage.setItem(this.key, JSON.stringify(credential));
   }
 
   /**
