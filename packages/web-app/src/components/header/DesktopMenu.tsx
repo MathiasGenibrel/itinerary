@@ -1,22 +1,20 @@
-import {
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@nextui-org/navbar";
+import { NavbarBrand, NavbarContent, NavbarMenuItem } from "@nextui-org/navbar";
 import { Link } from "@nextui-org/link";
 import { ApplicationPath } from "../../pages/router.tsx";
 import { Image } from "@nextui-org/image";
-import { Button } from "@nextui-org/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Item } from "./Header.tsx";
 import { FC } from "react";
+import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
+import { AuthCTA } from "./desktop/AuthCTA.tsx";
+import { AuthDropdown } from "./desktop/AuthDropdown.tsx";
 
 interface Props {
   items: Item[];
 }
 
 export const DesktopMenu: FC<Props> = ({ items }) => {
+  const auth = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -41,16 +39,11 @@ export const DesktopMenu: FC<Props> = ({ items }) => {
         ))}
       </NavbarContent>
 
-      <NavbarContent justify="end" className={"hidden sm:flex"}>
-        <NavbarItem>
-          <Link href={ApplicationPath.LOGIN}>Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link href={ApplicationPath.REGISTER}>
-            <Button color="primary">Register</Button>
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      {auth.state.isAuthenticated ? (
+        <AuthDropdown user={auth.state.user!} />
+      ) : (
+        <AuthCTA />
+      )}
     </>
   );
 };
