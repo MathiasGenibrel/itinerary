@@ -38,18 +38,18 @@ export function Header() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem isActive>
+        <NavbarItem>
           <Link to={ApplicationPath.LOGIN}>Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button
-            as={Link}
-            href={ApplicationPath.REGISTER}
-            variant="flat"
-            className="rounded-3xl bg-blue-600 text-white"
-          >
-            Register
-          </Button>
+          <Link to={ApplicationPath.REGISTER} aria-current="page">
+            <Button
+              variant="flat"
+              className="rounded-3xl bg-blue-600 text-white"
+            >
+              Register
+            </Button>
+          </Link>
         </NavbarItem>
       </NavbarContent>
     </Navbar>

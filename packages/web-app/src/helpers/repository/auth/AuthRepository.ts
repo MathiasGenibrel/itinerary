@@ -3,4 +3,5 @@ import { RegisterRequest, LoginRequest, LoginResponse } from "@shared/contract/a
 export interface AuthRepository {
   register: (authCredential: RegisterRequest) => Promise<void>;
   login: (authCredential: LoginRequest) => Promise<LoginResponse>;
+  updateCredentials: (authCredential: LoginResponse) => Promise<LoginResponse>;
 }
