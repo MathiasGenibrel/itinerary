@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterInputs, schema } from "../../schema.ts";
 import { FC } from "react";
+import { PasswordInput } from "./PasswordInput.tsx";
 
 export const RegisterForm: FC = () => {
   const {
@@ -82,8 +83,7 @@ export const RegisterForm: FC = () => {
           name="password"
           control={control}
           render={({ field }) => (
-            <Input
-              type="password"
+            <PasswordInput
               label="Password"
               placeholder="Enter your password"
               autoComplete="new-password"
@@ -97,8 +97,7 @@ export const RegisterForm: FC = () => {
           name="confirm"
           control={control}
           render={({ field }) => (
-            <Input
-              type="password"
+            <PasswordInput
               label="Confirm Password"
               placeholder="Confirm your password"
               autoComplete="new-password"

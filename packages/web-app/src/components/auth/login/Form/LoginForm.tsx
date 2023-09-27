@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginInputs, schema } from "../../schema.ts";
 import { FC } from "react";
+import { PasswordInput } from "../../register/Form/PasswordInput.tsx";
 
 export const LoginForm: FC = () => {
   const {
@@ -64,8 +65,7 @@ export const LoginForm: FC = () => {
           name="password"
           control={control}
           render={({ field }) => (
-            <Input
-              type="password"
+            <PasswordInput
               label="Password"
               placeholder="Enter your password"
               autoComplete="current-password"
