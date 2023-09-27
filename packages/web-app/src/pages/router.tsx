@@ -1,17 +1,19 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { App } from './App';
-import Register from './register/page.tsx';
-import Login from './login/page.tsx';
-import Dashboard from './dashboard/page.tsx';
-import Profile from './profile/page.tsx';
-import { Layout } from '../components/layout/Layout.tsx';
+import { createBrowserRouter } from "react-router-dom";
+import { App } from "./App";
+import Register from "./register/page.tsx";
+import Login from "./login/page.tsx";
+import Dashboard from "./dashboard/page.tsx";
+import Profile from "./profile/page.tsx";
+import Help from "./help/page.tsx";
+import { Layout } from "../components/layout/Layout.tsx";
 
 export enum ApplicationPath {
-  HOME = '/',
-  REGISTER = '/register',
-  LOGIN = '/login',
-  DASHBOARD = '/dashboard',
-  PROFILE = '/profile',
+  HOME = "/",
+  REGISTER = "/register",
+  LOGIN = "/login",
+  DASHBOARD = "/dashboard",
+  PROFILE = "/profile",
+  HELP = "/help",
 }
 
 export const router = createBrowserRouter([
@@ -38,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: ApplicationPath.PROFILE,
         element: <Profile />,
+      },
+      {
+        path: ApplicationPath.HELP,
+        element: <Help />,
       },
     ],
   },
