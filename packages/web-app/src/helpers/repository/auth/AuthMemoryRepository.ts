@@ -1,9 +1,9 @@
-import { LoginResponse } from '@shared/contract/auth';
+import { LoginResponse } from "@shared/contract/auth";
 import { AuthRepository } from "./AuthRepository";
 
 export class AuthMemoryRepository implements AuthRepository {
   private readonly timeout: number = 2e3;
-  private readonly percentageSuccessRating: number = 0.5;
+  private readonly percentageSuccessRating: number = 1;
 
   public async register(): Promise<void> {
     await this.delay();
@@ -11,12 +11,6 @@ export class AuthMemoryRepository implements AuthRepository {
     const isSuccessfulRequest = Math.random() < this.percentageSuccessRating;
 
     if (!isSuccessfulRequest) throw new Error("This username is already used");
-  }
-
-  private delay(): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, this.timeout);
-    });
   }
 
   public async login(): Promise<LoginResponse> {
@@ -30,7 +24,13 @@ export class AuthMemoryRepository implements AuthRepository {
       email: "notch@minecraft.net",
       username: "notch",
       token: "Never dig down!",
-    }
+    };
+  }
+
+  private delay(): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(resolve, this.timeout);
+    });
   }
 
   public async updateCredentials(authCredential : LoginResponse): Promise<LoginResponse> {

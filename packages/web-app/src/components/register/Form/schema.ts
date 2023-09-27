@@ -9,7 +9,7 @@ const MIN_PASSWORD_LENGTH = 12;
  * - 1 Special character
  */
 const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.-]+$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.-_]+$/;
 
 export interface RegisterInputs {
   email: string;

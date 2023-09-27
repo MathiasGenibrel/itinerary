@@ -2,11 +2,17 @@ import { useState } from "react";
 import { AuthRepository } from "../../../helpers/repository/auth/AuthRepository";
 import { AuthMemoryRepository } from "../../../helpers/repository/auth/AuthMemoryRepository";
 import { LoginResponse, RegisterRequest } from "@shared/contract/auth";
+import { useAuthDispatcher } from "../../../context/auth/hooks/useAuthDispatcher.tsx";
+import { AuthActionType } from "../../../context/auth/types.ts";
+import { useNavigate } from "react-router-dom";
+import { ApplicationPath } from "../../../pages/router.tsx";
 
 const authService: AuthRepository = new AuthMemoryRepository();
 
 export const useRegisterForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);
+  const { dispatch } = useAuthDispatcher();
+  const navigate = useNavigate();
 
   return {
     isLoading,
@@ -27,9 +33,9 @@ export const useRegisterForm = () => {
      * Changes toast state, to success state and redirect user to home page.
      */
     success: (data: LoginResponse) => {
-      console.log("[DEBUG] Register Request : ", data);
+      dispatch({ type: AuthActionType.LOGIN, payload: { user: data } });
       setFormLoading(false);
-      // router.push("/"); TODO REDIRECT USER AFTER LOGIN
+      navigate(ApplicationPath.HOME);
       return "Your account has been created";
     },
     /**
