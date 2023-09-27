@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import { AuthAction, AuthState } from "./types";
 import { authReducer } from "./authReducer";
+import { ClientStorageRepository } from "../../helpers/repository/auth/ClientStorageRepository.ts";
 
 interface AuthContext {
   state: AuthState;
@@ -23,12 +24,9 @@ interface Props {
   children: ReactElement;
 }
 
-// Créez un composant AuthProvider qui fournit le contexte d'authentification
+const clientStorage = new ClientStorageRepository(localStorage);
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, {
-    isAuthenticated: false,
-    user: null,
-  });
+  const [state, dispatch] = useReducer(authReducer, clientStorage.get());
 
   return (
     <AuthContext.Provider value={{ state }}>
