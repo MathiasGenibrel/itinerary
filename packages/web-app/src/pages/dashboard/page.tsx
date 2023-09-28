@@ -1,26 +1,28 @@
 import { Itinerary } from "@shared/contract/itinerary";
-import { Card, CardFooter } from "@nextui-org/react";
 import { ItineraryRepository } from "../../helpers/repository/itinerary/ItineraryRepository";
 import { ItineraryMemoryRepository } from "../../helpers/repository/itinerary/ItineraryMemoryRepository";
-import { Image } from "@nextui-org/image";
-import { Button } from "@nextui-org/button";
-import {
-  Download,
-  InfoCircle,
-  Pencil,
-  ThreeDotsVertical,
-  Trash,
-} from "react-bootstrap-icons";
 import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser().tsx";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/dropdown";
+import { RouteCard } from "../../components/dashboard/Card/RouteCard.tsx";
+import { GeoAlt, Stopwatch } from "react-bootstrap-icons";
+import { SectionWrapper } from "../../components/dashboard/SectionWrapper.tsx";
+import { StatCard } from "../../components/dashboard/Card/StatCard.tsx";
 
 export default function Page() {
   const user = useAuthenticatedUser();
+
+  /* TODO add business logic
+   * - Need to validate ItineraryMemoryRepository
+   * - Need to add toaster for PDF download
+   * - Need to add each handler:
+   *  - Download button handler
+   *  - Info button handler
+   *  - Edit button handler
+   *  - Delete button handler
+   *
+   * - Inspect if we need a context for the travel generation.
+   * - e.g. => When user press on edit, client navigate to ApplicationPath.HOME and he see his selected travel
+   */
+
   const itineraryService: ItineraryRepository = new ItineraryMemoryRepository();
 
   const itineraries: Itinerary[] = [
@@ -50,87 +52,43 @@ export default function Page() {
     },
   ];
 
-  const handleClickEdit = async (itinerary: Itinerary) => {
-    await itineraryService.edit(itinerary);
-  };
-
-  const handleClickDelete = async (itinerary: Itinerary) => {
-    await itineraryService.delete({ id: itinerary.id });
-  };
+  // const handleClickEdit = async (itinerary: Itinerary) => {
+  //   await itineraryService.edit(itinerary);
+  // };
+  //
+  // const handleClickDelete = async (itinerary: Itinerary) => {
+  //   await itineraryService.delete({ id: itinerary.id });
+  // };
 
   return (
     <>
-      <article className={"flex flex-col gap-4"}>
+      <article className={"flex flex-col gap-6 pt-4"}>
         <h1 className={"text-xl w-full"}>
-          Bonjour <span className={"font-semibold"}>{user.username}.</span>
+          Hello <span className={"font-semibold"}>{user.username}. 👋</span>
         </h1>
-        <section className="flex flex-wrap gap-6 justify-center">
-          {itineraries.map((itinerary) => (
-            <Card
-              key={itinerary.id}
-              isFooterBlurred
-              radius="lg"
-              className="border-none w-fit basis-72	grow"
-            >
-              <Image
-                alt="Woman listing to music"
-                className="object-cover w-full aspect-square"
-                src="/map_background.jpg"
-              />
-              <CardFooter className="justify-between gap-4 bg-black/30 border-white/20 border-1 overflow-hidden py-1 absolute rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                <p className="text-sm font-semibold text-white/80 truncate">
-                  {itinerary.name}
-                </p>
-                <section className={"flex gap-2"}>
-                  <Button
-                    className="text-tiny"
-                    color="success"
-                    radius="lg"
-                    size="sm"
-                    startContent={<Download />}
-                  >
-                    Download
-                  </Button>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button
-                        className="text-tiny text-white"
-                        color="default"
-                        variant={"light"}
-                        radius="lg"
-                        size="sm"
-                        isIconOnly
-                        startContent={
-                          <ThreeDotsVertical size={16} title={"Options"} />
-                        }
-                      ></Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      variant="faded"
-                      aria-label="Dropdown menu with icons"
-                    >
-                      <DropdownItem key="new" startContent={<InfoCircle />}>
-                        Info
-                      </DropdownItem>
-                      <DropdownItem key="copy" startContent={<Pencil />}>
-                        Edit
-                      </DropdownItem>
-                      <DropdownItem
-                        key="delete"
-                        className="text-danger"
-                        color="danger"
-                        variant={"solid"}
-                        startContent={<Trash />}
-                      >
-                        Delete route
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </section>
-              </CardFooter>
-            </Card>
-          ))}
-        </section>
+
+        <SectionWrapper title="Total">
+          <section className="flex flex-wrap gap-4">
+            <StatCard
+              icon={<GeoAlt className="text-warning" size={16} />}
+              title={"distance"}
+              statistic={{ unit: "km", value: "104" }}
+            />
+            <StatCard
+              icon={<Stopwatch className="text-warning" size={16} />}
+              title={"distance"}
+              statistic={{ unit: "h", value: "19:35" }}
+            />
+          </section>
+        </SectionWrapper>
+
+        <SectionWrapper title={`Travel (${itineraries.length})`}>
+          <section className="flex flex-wrap gap-6 justify-center">
+            {itineraries.map((itinerary) => (
+              <RouteCard itinerary={itinerary} key={itinerary.id} />
+            ))}
+          </section>
+        </SectionWrapper>
       </article>
     </>
   );
