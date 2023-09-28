@@ -53,7 +53,10 @@ export const AuthCard: FC<Props> = ({ items, user, toggleMenu }) => {
             src: "/avatar.webp",
           }}
           className={"cursor-pointer"}
-          onClick={() => navigate(ApplicationPath.PROFILE)}
+          onClick={() => {
+            toggleMenu();
+            navigate(ApplicationPath.PROFILE);
+          }}
         />
         <Button color={"danger"} onPress={pressHandler}>
           <BoxArrowRight size={16} />
