@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <Card isFooterBlurred radius="lg" className="border-none w-fit mx-auto">
       <Image
-        alt="Woman listing to music"
+        alt="Developper work on this feature"
         className="object-cover"
         src="/wip.png"
         height={400}
