@@ -1,7 +1,8 @@
+import BikeMap from '../components/bikeMap/BikeMap';
 export const App = () => {
   return (
     <>
-      <p>Coucou Mathias</p>
+      <BikeMap />
     </>
   );
 };
