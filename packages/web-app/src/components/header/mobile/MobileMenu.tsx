@@ -1,7 +1,5 @@
-import { NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
+import { NavbarMenu } from "@nextui-org/navbar";
 import { DispatchWithoutAction, FC } from "react";
-import { Link } from "@nextui-org/link";
-import { Divider } from "@nextui-org/divider";
 import { Item } from "../Header.tsx";
 import { AuthCTA } from "./AuthCTA.tsx";
 import { ApplicationPath } from "../../../pages/router.tsx";
@@ -18,23 +16,12 @@ export const MobileMenu: FC<Props> = ({ items, toggleMenu }) => {
 
   return (
     <NavbarMenu className={"sm:hidden"}>
-      {items.map((item, index) => (
-        <NavbarMenuItem key={`${item}-${index}`}>
-          <Link
-            color={"foreground"}
-            className={`w-full cursor-pointer ${item.className}`}
-            onClick={() => {
-              toggleMenu();
-              item.pressHandler();
-            }}
-          >
-            {item.children}
-          </Link>
-        </NavbarMenuItem>
-      ))}
-      <Divider />
       {auth.state.isAuthenticated ? (
-        <AuthCard user={auth.state.user!} toggleMenu={toggleMenu} />
+        <AuthCard
+          user={auth.state.user!}
+          toggleMenu={toggleMenu}
+          items={items}
+        />
       ) : (
         <section className={"flex flex-wrap gap-2 items-center w-full"}>
           <AuthCTA

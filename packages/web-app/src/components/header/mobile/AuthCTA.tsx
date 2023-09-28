@@ -15,18 +15,20 @@ interface Props {
 export const AuthCTA: FC<Props> = ({ to, toggleMenu, variant, children }) => {
   const navigate = useNavigate();
   return (
-    <NavbarMenuItem className={"w-full basis-40 grow"}>
-      <Button
-        color="primary"
-        variant={variant}
-        className={"w-full"}
-        onPress={() => {
-          toggleMenu();
-          navigate(to);
-        }}
-      >
-        {children}
-      </Button>
-    </NavbarMenuItem>
+    <>
+      <NavbarMenuItem className={"w-full basis-40 grow"}>
+        <Button
+          color="primary"
+          variant={variant}
+          className={"w-full"}
+          onPress={() => {
+            toggleMenu();
+            navigate(to);
+          }}
+        >
+          {children}
+        </Button>
+      </NavbarMenuItem>
+    </>
   );
 };
