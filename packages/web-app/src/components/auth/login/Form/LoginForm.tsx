@@ -33,7 +33,7 @@ export const LoginForm: FC = () => {
           password: credential.password,
         }),
       {
-        loading: "Account creation in progress...",
+        loading: "Connection in progress...",
         success: loginFormHandler.success,
         error: loginFormHandler.error,
       },
