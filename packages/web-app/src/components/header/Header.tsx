@@ -80,7 +80,12 @@ export const Header = () => {
   return (
     <Navbar isMenuOpen={isOpen} onMenuOpenChange={toggleMenu}>
       <NavbarBrand>
-        <Link onPress={() => navigate(ApplicationPath.HOME)}>
+        <Link
+          onPress={() => {
+            if (isOpen) toggleMenu();
+            navigate(ApplicationPath.HOME);
+          }}
+        >
           <Image src="/logo.svg" alt="Logo" width={40} height={40} />
         </Link>
       </NavbarBrand>

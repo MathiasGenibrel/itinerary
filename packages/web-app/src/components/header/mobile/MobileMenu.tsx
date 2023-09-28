@@ -23,7 +23,10 @@ export const MobileMenu: FC<Props> = ({ items, toggleMenu }) => {
           <Link
             color={"foreground"}
             className={`w-full cursor-pointer ${item.className}`}
-            onClick={item.pressHandler}
+            onClick={() => {
+              toggleMenu();
+              item.pressHandler();
+            }}
           >
             {item.children}
           </Link>
