@@ -61,35 +61,33 @@ export default function Page() {
   // };
 
   return (
-    <>
-      <article className={"flex flex-col gap-6 pt-4"}>
-        <h1 className={"text-xl w-full"}>
-          Hello <span className={"font-semibold"}>{user.username}. 👋</span>
-        </h1>
+    <article className={"flex flex-col gap-6 pt-4"}>
+      <h1 className={"text-xl w-full"}>
+        Hello <span className={"font-semibold"}>{user.username}. 👋</span>
+      </h1>
 
-        <SectionWrapper title="Total">
-          <section className="flex flex-wrap gap-4">
-            <StatCard
-              icon={<GeoAlt className="text-warning" size={16} />}
-              title={"distance"}
-              statistic={{ unit: "km", value: "104" }}
-            />
-            <StatCard
-              icon={<Stopwatch className="text-warning" size={16} />}
-              title={"distance"}
-              statistic={{ unit: "h", value: "19:35" }}
-            />
-          </section>
-        </SectionWrapper>
+      <SectionWrapper title="Total">
+        <section className="flex flex-wrap gap-4">
+          <StatCard
+            icon={<GeoAlt className="text-warning" size={16} />}
+            title={"distance"}
+            statistic={{ unit: "km", value: "104" }}
+          />
+          <StatCard
+            icon={<Stopwatch className="text-warning" size={16} />}
+            title={"distance"}
+            statistic={{ unit: "h", value: "19:35" }}
+          />
+        </section>
+      </SectionWrapper>
 
-        <SectionWrapper title={`Travel (${itineraries.length})`}>
-          <section className="flex flex-wrap gap-6 justify-center">
-            {itineraries.map((itinerary) => (
-              <RouteCard itinerary={itinerary} key={itinerary.id} />
-            ))}
-          </section>
-        </SectionWrapper>
-      </article>
-    </>
+      <SectionWrapper title={`Travel (${itineraries.length})`}>
+        <section className="flex flex-wrap gap-6 justify-center">
+          {itineraries.map((itinerary) => (
+            <RouteCard itinerary={itinerary} key={itinerary.id} />
+          ))}
+        </section>
+      </SectionWrapper>
+    </article>
   );
 }
