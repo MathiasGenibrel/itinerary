@@ -31,6 +31,8 @@ export const AuthCard: FC<Props> = ({ user, toggleMenu }) => {
         avatarProps={{
           src: "/avatar.webp",
         }}
+        className={"cursor-pointer"}
+        onClick={() => navigate(ApplicationPath.PROFILE)}
       />
       <Button color={"danger"} onPress={pressHandler}>
         <BoxArrowRight size={16} />
