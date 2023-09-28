@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardBody } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
@@ -7,11 +5,12 @@ import { AuthRepository } from "../../helpers/repository/auth/AuthRepository";
 import { AuthMemoryRepository } from "../../helpers/repository/auth/AuthMemoryRepository";
 import { FormEvent, useState } from "react";
 import { toast, Toaster } from "sonner";
-import { LoginResponse } from '@shared/contract/auth';
+import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
 
 export default function Page() {
-  
-  const [user, setUser] = useState<LoginResponse>(JSON.parse(String(localStorage.getItem('user'))));
+  const auth = useAuth();
+  if (!auth.state.isAuthenticated) throw new Error("User not logged in");
+  const user = auth.state.user!;
 
   const [isLoading, setFormLoading] = useState<boolean>(false);
 
@@ -28,18 +27,18 @@ export default function Page() {
       () => {
         setFormLoading(true);
         return authService.updateCredentials({
-            id : user.id,
-            email,
-            username,
-            token: user.token
-        })
+          id: user.id,
+          email,
+          username,
+          token: user.token,
+        });
       },
       {
         loading: "Updating...",
         success: (data) => {
           setFormLoading(false);
-          localStorage.setItem('user', JSON.stringify(data));
-          setUser(data);
+          localStorage.setItem("user", JSON.stringify(data));
+          // setUser(data);
           return "Update successfully";
         },
         error: (data: Error) => {
@@ -55,7 +54,9 @@ export default function Page() {
       <Toaster />
       <Card>
         <CardBody className={"gap-2"}>
-          <h1 className={"text-3xl font-medium text-center"}>Update Credentials</h1>
+          <h1 className={"text-3xl font-medium text-center"}>
+            Update Credentials
+          </h1>
           <form className={"flex flex-col gap-4"} onSubmit={formHandler}>
             <section>
               <Input

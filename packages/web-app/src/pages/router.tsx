@@ -6,6 +6,7 @@ import Dashboard from "./dashboard/page.tsx";
 import Profile from "./profile/page.tsx";
 import Help from "./help/page.tsx";
 import { Layout } from "../components/layout/Layout.tsx";
+import { ProtectedRoute } from "./ProtectedRoute.tsx";
 
 export enum ApplicationPath {
   HOME = "/",
@@ -34,16 +35,22 @@ export const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: ApplicationPath.DASHBOARD,
-        element: <Dashboard />,
-      },
-      {
-        path: ApplicationPath.PROFILE,
-        element: <Profile />,
-      },
-      {
-        path: ApplicationPath.HELP,
-        element: <Help />,
+        path: ApplicationPath.HOME,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: ApplicationPath.DASHBOARD,
+            element: <Dashboard />,
+          },
+          {
+            path: ApplicationPath.PROFILE,
+            element: <Profile />,
+          },
+          {
+            path: ApplicationPath.HELP,
+            element: <Help />,
+          },
+        ],
       },
     ],
   },

@@ -9,7 +9,7 @@ export default function Page() {
   const navigate = useNavigate();
 
   return (
-    <section className={"flex flex-col justify-center mx-8 h-[100dvh]"}>
+    <section className={"flex flex-col justify-center"}>
       <Toaster />
       <Card>
         <CardBody className={"gap-2"}>
