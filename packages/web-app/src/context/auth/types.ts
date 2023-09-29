@@ -21,5 +21,5 @@ export interface AuthPayloadUpdate {
 
 export interface AuthAction {
   type: AuthActionType;
-  payload: AuthPayloadLogin | AuthPayloadUpdate;
+  payload?: AuthPayloadLogin | AuthPayloadUpdate;
 }
