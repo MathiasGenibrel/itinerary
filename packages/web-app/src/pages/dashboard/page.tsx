@@ -1,23 +1,19 @@
-import { TravelRepository } from "../../helpers/repository/travel/TravelRepository.ts";
-import { TravelMemoryRepository } from "../../helpers/repository/travel/TravelMemoryRepository.ts";
-import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser.tsx";
-import { RouteCard } from "../../components/dashboard/Card/RouteCard.tsx";
+import { TravelCardList } from "../../components/dashboard/Card/TravelCard.tsx";
 import { GeoAlt, Stopwatch } from "react-bootstrap-icons";
 import { SectionWrapper } from "../../components/dashboard/SectionWrapper.tsx";
 import { StatCard } from "../../components/dashboard/Card/StatCard.tsx";
-import { useEffect, useState } from "react";
-import { toast, Toaster } from "sonner";
-import { Travel } from "@shared/contract/travel.ts";
-import { Skeleton } from "@nextui-org/react";
-import { Card } from "@nextui-org/card";
-
-const travelService: TravelRepository = new TravelMemoryRepository();
+import { useEffect } from "react";
+import { Toaster } from "sonner";
+import { SkeletonTravelCardList } from "../../components/dashboard/Card/SkeletonTravelCard.tsx";
+import { ErrorLoadingModal } from "../../components/dashboard/ErrorLoadingModal.tsx";
+import { useLoadingTravels } from "../../components/dashboard/useLoadingTravels.tsx";
 
 export default function Page() {
-  const user = useAuthenticatedUser();
+  const { user, notifyUser, onOpenChange, isOpen, travels, isLoading } =
+    useLoadingTravels();
 
   /* TODO add business logic
-   * - Need to validate ItineraryMemoryRepository
+   * - Need to validate TravelMemoryRepository
    * - Need to add toaster for PDF download
    * - Need to add each handler:
    *  - Download button handler
@@ -28,41 +24,23 @@ export default function Page() {
    * - Inspect if we need a context for the travel generation.
    * - e.g. => When user press on edit, client navigate to ApplicationPath.HOME and he see his selected travel
    */
-  const [travels, setTravels] = useState<Travel[]>([]);
-  const [isLoading, setLoader] = useState<boolean>(true);
-  const [isError, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    toast.promise(
-      async () => {
-        return await travelService.getAll(user.id);
-      },
-      {
-        loading: "Travels are loading",
-        success: (data) => {
-          setTravels(data);
-          setLoader(false);
-          setError(false);
-          return "Travels have been recovered";
-        },
-        error: (error: Error) => {
-          setTravels([]);
-          setError(true);
-          setLoader(false);
-          return error.message;
-        },
-      },
-    );
+    notifyUser();
   }, []);
 
   return (
     <>
       <Toaster richColors />
+      <ErrorLoadingModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        notifyUser={notifyUser}
+      />
       <article className={"flex flex-col gap-6 pt-4 min-h-full"}>
         <h1 className={"text-xl w-full"}>
           Hello <span className={"font-semibold"}>{user.username}. 👋</span>
         </h1>
-
         <SectionWrapper title="Total">
           <section className="flex flex-wrap gap-4 sm:gap-8">
             <StatCard
@@ -77,34 +55,15 @@ export default function Page() {
             />
           </section>
         </SectionWrapper>
-
-        {isError && "hello"}
-
-        {isLoading ? (
-          <Card className="w-full basis-72 grow aspect-square space-y-2">
-            <Skeleton className="h-full rounded-lg">
-              <div className="h-full rounded-lg bg-default-300"></div>
-            </Skeleton>
-            <div className="flex gap-2 p-2">
-              <Skeleton className="w-4/5 rounded-lg">
-                <div className="h-6 w-full rounded-lg bg-default-300"></div>
-              </Skeleton>
-              <Skeleton className="w-1/5 rounded-lg">
-                <div className="h-6 w-full rounded-lg bg-default-300"></div>
-              </Skeleton>
-            </div>
-          </Card>
-        ) : (
-          !isError && (
-            <SectionWrapper title={`Travel (${travels.length})`}>
-              <section className="flex flex-wrap gap-6 justify-center">
-                {travels.map((travel) => (
-                  <RouteCard travel={travel} key={travel.id} />
-                ))}
-              </section>
-            </SectionWrapper>
-          )
-        )}
+        <SectionWrapper title={`Travel (${travels.length})`}>
+          <section className="flex flex-wrap gap-6 justify-center">
+            {isLoading ? (
+              <SkeletonTravelCardList />
+            ) : (
+              <TravelCardList travels={travels} />
+            )}
+          </section>
+        </SectionWrapper>
       </article>
     </>
   );

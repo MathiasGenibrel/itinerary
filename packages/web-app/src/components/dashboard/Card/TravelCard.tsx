@@ -11,7 +11,7 @@ interface Props {
   travel: Travel;
 }
 
-export const RouteCard: FC<Props> = ({ travel }) => {
+const TravelCard: FC<Props> = ({ travel }) => {
   return (
     <Card
       key={travel.id}
@@ -44,3 +44,10 @@ export const RouteCard: FC<Props> = ({ travel }) => {
     </Card>
   );
 };
+
+interface RouteCardListProps {
+  travels: Travel[];
+}
+
+export const TravelCardList: FC<RouteCardListProps> = ({ travels }) =>
+  travels.map((travel) => <TravelCard travel={travel} key={travel.id} />);
