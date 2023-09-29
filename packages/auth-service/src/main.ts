@@ -4,21 +4,22 @@ import { DataSource } from "typeorm"
 import { User } from './entities/User';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './../swagger';
+import swaggerSpec from './swagger';
+import bcrypt from 'bcrypt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const bcrypt = require('bcrypt');
-const { promisify } = require('util');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const jwt = require('jsonwebtoken');
-const verifyToken = promisify(jwt.verify);
-const key_token = "fezujvjifoezjfnfklnbhrkp"; 
+const verifyToken = jwt.verify;
+const key_token = `${process.env.TOKEN}`; 
 const saltRounds = 10;
 
 const corsOptions = {
-  origin: '*', // Remplacez par le domaine de votre frontend
+  origin: process.env.CORSORIGIN, 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Permet d'inclure les cookies et les en-têtes d'autorisation
+  credentials: true,
 };
 
 app.use(express.json());
@@ -26,7 +27,7 @@ app.use(cors(corsOptions));
 
 const AppDataSource = new DataSource({
   type: 'sqlite',
-  database: './mydb.sqlite',
+  database: `./${process.env.DBNAME}`,
   entities: [User],
   synchronize: true,
 })
@@ -50,21 +51,30 @@ function generateToken(user : User) {
   return token;
 }
 
-const authenticateToken = async (req : any, res: any, next: any) => {
+import { Request, Response, NextFunction } from 'express';
+
+declare module 'express' {
+  interface Request {
+    user: User;
+  }
+}
+
+const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization');
 
   if (!token) {
-    return res.status(401).json({ message: 'Token JWT manquant' });
+    return res.status(401).json({ error: 'Token JWT manquant' });
   }
   
   try {
     const decoded = await verifyToken(token, key_token);
-    req.user = decoded;
+    req.user = decoded as User;
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Token JWT invalide' });
+    return res.status(401).json({ error: 'Token JWT invalide' });
   }
 };
+
 
 
 /**
@@ -109,7 +119,7 @@ app.post('/register', async (req, res) => {
 
   try {
     await userRepository.save(user);
-    res.json({ message: 'Utilisateur créé avec succès' });
+    res.status(201);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la création de l\'utilisateur' });
   }
