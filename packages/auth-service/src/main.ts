@@ -2,6 +2,9 @@ import express from 'express';
 import "reflect-metadata";
 import { DataSource } from "typeorm"
 import { User } from './entities/User';
+import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './../swagger';
 
 const bcrypt = require('bcrypt');
 const { promisify } = require('util');
@@ -12,7 +15,14 @@ const verifyToken = promisify(jwt.verify);
 const key_token = "fezujvjifoezjfnfklnbhrkp"; 
 const saltRounds = 10;
 
+const corsOptions = {
+  origin: '*', // Remplacez par le domaine de votre frontend
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Permet d'inclure les cookies et les en-têtes d'autorisation
+};
+
 app.use(express.json());
+app.use(cors(corsOptions));
 
 const AppDataSource = new DataSource({
   type: 'sqlite',
@@ -57,7 +67,35 @@ const authenticateToken = async (req : any, res: any, next: any) => {
 };
 
 
-// Créez un utilisateur
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     description: Créez un utilisateur
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: email
+ *         description: Adresse e-mail de l'utilisateur
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: username
+ *         description: Nom d'utilisateur de l'utilisateur
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: Mot de passe de l'utilisateur
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur créé avec succès
+ *       500:
+ *         description: Erreur lors de la création de l'utilisateur
+ */
 app.post('/register', async (req, res) => {
   const { email, username, password } = req.body;
 
@@ -77,7 +115,33 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// Authentification de l'utilisateur
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Authentification de l'utilisateur
+ *     description: Permet à un utilisateur de s'authentifier et de recevoir un token JWT s'il est valide.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: email
+ *         description: Adresse e-mail de l'utilisateur.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: Mot de passe de l'utilisateur.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Authentification réussie. Renvoie un token JWT.
+ *       401:
+ *         description: Identifiants incorrects.
+ *       500:
+ *         description: Erreur lors de l'authentification.
+ */
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -101,7 +165,26 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Obtenir le profil de l'utilisateur
+/**
+ * @swagger
+ * /profil:
+ *   get:
+ *     summary: Obtenir le profil de l'utilisateur
+ *     description: Récupère le profil de l'utilisateur authentifié en utilisant un token JWT valide.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - JWTAuth: []
+ *     responses:
+ *       200:
+ *         description: Profil de l'utilisateur récupéré avec succès.
+ *       401:
+ *         description: Token JWT invalide ou manquant.
+ *       404:
+ *         description: Utilisateur introuvable.
+ *       500:
+ *         description: Erreur lors de la récupération du profil.
+ */
 app.get('/profil', authenticateToken, async (req, res) => {
   const { id } = req.body;
 
@@ -118,7 +201,42 @@ app.get('/profil', authenticateToken, async (req, res) => {
   }
 });
 
-// Mettre à jour l'utilisateur
+/**
+ * @swagger
+ * /profil/updateUser:
+ *   put:
+ *     summary: Mettre à jour l'utilisateur
+ *     description: Met à jour les informations de l'utilisateur authentifié en utilisant un token JWT valide.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - JWTAuth: []
+ *     parameters:
+ *       - name: email
+ *         description: Nouvelle adresse e-mail de l'utilisateur.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: username
+ *         description: Nouveau nom d'utilisateur de l'utilisateur.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: Nouveau mot de passe de l'utilisateur.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur mis à jour avec succès.
+ *       401:
+ *         description: Token JWT invalide ou manquant.
+ *       404:
+ *         description: Utilisateur introuvable.
+ *       500:
+ *         description: Erreur lors de la mise à jour de l'utilisateur.
+ */
 app.put('/profil/updateUser', authenticateToken, async (req, res) => {
   const { id } = req.body;
   const { email, username, password } = req.body;
@@ -141,7 +259,26 @@ app.put('/profil/updateUser', authenticateToken, async (req, res) => {
   }
 });
 
-// Supprimer l'utilisateur
+/**
+ * @swagger
+ * /profil/deleteUser:
+ *   delete:
+ *     summary: Supprimer l'utilisateur
+ *     description: Supprime l'utilisateur authentifié en utilisant un token JWT valide.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - JWTAuth: []
+ *     responses:
+ *       200:
+ *         description: Utilisateur supprimé avec succès.
+ *       401:
+ *         description: Token JWT invalide ou manquant.
+ *       404:
+ *         description: Utilisateur introuvable.
+ *       500:
+ *         description: Erreur lors de la suppression de l'utilisateur.
+ */
 app.delete('/profil/deleteUser', authenticateToken, async (req, res) => {
   const { id } = req.body;
 
@@ -158,6 +295,20 @@ app.delete('/profil/deleteUser', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur' });
   }
 });
+
+/**
+ * @swagger
+ * /api-docs:
+ *   get:
+ *     summary: Obtenir la documentation Swagger
+ *     description: Renvoie la documentation Swagger générée automatiquement pour l'API.
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Documentation Swagger générée avec succès.
+ */
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Démarrer le serveur
 app.listen(PORT, () => {
