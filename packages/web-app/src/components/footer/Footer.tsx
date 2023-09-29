@@ -6,11 +6,16 @@ export function Footer() {
     <>
       <footer
         className={
-          "flex w-full justify-center sm:justify-start gap-2 px-8 pb-8 pt-12 max-w-screen-2xl mx-auto"
+          "flex justify-center sm:justify-start gap-2 px-8 pb-8 pt-12 max-w-screen-2xl mx-auto sm:w-full"
         }
       >
         <span>©Itinerary</span>
-        <nav aria-label="Footer navigation" className={"flex flex-col gap-4"}>
+        <nav
+          aria-label="Footer navigation"
+          className={
+            "flex flex-col gap-4 w-full sm:flex-row sm:justify-between"
+          }
+        >
           <ul aria-label="Privacy links" className="flex gap-2">
             <li>
               <Link color={"foreground"} href="#">
