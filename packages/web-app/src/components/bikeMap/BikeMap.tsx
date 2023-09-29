@@ -82,6 +82,28 @@ const BikeMap: React.FC = () => {
       ],
     });
     console.log(L.Routing.Plan);
+
+    instance.on('routesfound', function (e) {
+      const [startPoint, endPoint] = e.routes;
+      const summary = startPoint.summary;
+      // alert distance and time in km and minutes
+      console.log(
+        'Total distance is ' +
+          Math.round(summary.totalDistance) +
+          ' meters and total time is ' +
+          Math.round((summary.totalDistance / 15e3) * 60) +
+          ' minutes'
+      );
+      console.log(
+        'Total distance is ' +
+          Math.round(summary.totalDistance) +
+          ' meters and total time is ' +
+          Math.round((summary.totalTime % 3600) / 60) +
+          ' minutes'
+      );
+      // console.log('routes', routes);
+    });
+
     return instance;
   };
 
