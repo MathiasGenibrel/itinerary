@@ -75,7 +75,7 @@ export default function Page() {
           />
           <StatCard
             icon={<Stopwatch className="text-warning" size={16} />}
-            title={"distance"}
+            title={"time"}
             statistic={{ unit: "h", value: "19:35" }}
           />
         </section>
