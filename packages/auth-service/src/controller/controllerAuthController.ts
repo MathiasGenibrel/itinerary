@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { userRepository } from "../config/database";
 
 export const profileController = async (req: Request, res: Response) => {
-    const { id } = req.body;
+    const { email } = req.body;
   
     try {
-      const user = await userRepository.findOneBy({ id: id });
+      const user = await userRepository.findOneBy({ email: email });
   
       if (user) {
         res.json(user);
@@ -20,11 +20,10 @@ export const profileController = async (req: Request, res: Response) => {
   };
   
 export const profileUpdateController = async (req: Request, res: Response) => {
-    const { id } = req.body;
     const { email, username, password } = req.body;
 
     try {
-        const user = await userRepository.findOneBy({id:id});
+        const user = await userRepository.findOneBy({email:email});
 
     if (user) {
         user.email = email;
@@ -42,10 +41,10 @@ export const profileUpdateController = async (req: Request, res: Response) => {
 };
 
 export const profileDeleteController = async (req: Request, res: Response) => {
-    const { id } = req.body;
+    const { email } = req.body;
 
     try {
-        const user = await userRepository.findOneBy({id:id});
+        const user = await userRepository.findOneBy({email:email});
 
         if (user) {
         await userRepository.remove(user);
