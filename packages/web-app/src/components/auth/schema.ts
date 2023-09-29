@@ -54,4 +54,9 @@ export const schema = {
       message: "Passwords don't match",
       path: ["confirm"],
     }),
+
+  profile: z.object({
+    email: z.string().email(),
+    username: z.string().max(64),
+  }),
 };

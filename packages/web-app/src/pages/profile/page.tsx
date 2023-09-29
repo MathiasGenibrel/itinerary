@@ -1,89 +1,44 @@
 import { Card, CardBody } from "@nextui-org/card";
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
-import { AuthRepository } from "../../helpers/repository/auth/AuthRepository";
-import { AuthMemoryRepository } from "../../helpers/repository/auth/AuthMemoryRepository";
-import { FormEvent, useState } from "react";
-import { toast, Toaster } from "sonner";
-import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
+import { Toaster } from "sonner";
+import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser.tsx";
+import { Chip } from "@nextui-org/react";
+import { ProfileForm } from "../../components/profile/ProfileForm.tsx";
 
 export default function Page() {
-  const auth = useAuth();
-  if (!auth.state.isAuthenticated) throw new Error("User not logged in");
-  const user = auth.state.user!;
-
-  const [isLoading, setFormLoading] = useState<boolean>(false);
-
-  const [email, setEmail] = useState<string>(user.email ?? "");
-
-  const [username, setUsername] = useState<string>(user.username ?? "");
-
-  const authService: AuthRepository = new AuthMemoryRepository();
-
-  const formHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    toast.promise(
-      () => {
-        setFormLoading(true);
-        return authService.updateCredentials({
-          id: user.id,
-          email,
-          username,
-          token: user.token,
-        });
-      },
-      {
-        loading: "Updating...",
-        success: (data) => {
-          setFormLoading(false);
-          localStorage.setItem("user", JSON.stringify(data));
-          // setUser(data);
-          return "Update successfully";
-        },
-        error: (data: Error) => {
-          setFormLoading(false);
-          return data.message;
-        },
-      },
-    );
-  };
+  const user = useAuthenticatedUser();
 
   return (
-    <section className={"flex flex-col justify-center mx-8 h-[100dvh]"}>
+    <section>
       <Toaster />
+      <section className="flex gap-2 w-full">
+        <img
+          alt=""
+          className="w-20 h-20 aspect-square rounded-2xl shadow"
+          src="/avatar.webp"
+        />
+        <section className="w-full overflow-hidden">
+          <h1 className="text-2xl font-semibold">{user.username}</h1>
+          <section className="flex items-center gap-4 w-full">
+            <p className="font-medium opacity-80 truncate">{user.email}</p>
+            <Chip size="sm" radius="sm" variant="flat">
+              JOINED JUN 7, 2022
+            </Chip>
+          </section>
+          <p
+            className="opacity-60 truncate"
+            title="Bring home the bacon !, Bring home the bacon ! Bring home the bacon!"
+          >
+            Adventure awaits, build your world, and always stay vigilant, but
+            always remember: Never dig down!
+          </p>
+        </section>
+      </section>
       <Card>
         <CardBody className={"gap-2"}>
           <h1 className={"text-3xl font-medium text-center"}>
             Update Credentials
           </h1>
-          <form className={"flex flex-col gap-4"} onSubmit={formHandler}>
-            <section>
-              <Input
-                type="email"
-                label="Email"
-                name="email"
-                inputMode="email"
-                placeholder={user.email}
-                isRequired={true}
-                value={email}
-                onValueChange={setEmail}
-              />
-              <Input
-                type="username"
-                label="Username"
-                name="username"
-                inputMode="text"
-                placeholder={user.username}
-                isRequired={true}
-                value={username}
-                onValueChange={setUsername}
-              />
-            </section>
-            <Button color="primary" type={"submit"} isLoading={isLoading}>
-              Update credentials
-            </Button>
-          </form>
+          <ProfileForm />
         </CardBody>
       </Card>
     </section>

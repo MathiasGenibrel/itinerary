@@ -1,7 +1,7 @@
 import { Itinerary } from "@shared/contract/itinerary";
 import { ItineraryRepository } from "../../helpers/repository/itinerary/ItineraryRepository";
 import { ItineraryMemoryRepository } from "../../helpers/repository/itinerary/ItineraryMemoryRepository";
-import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser().tsx";
+import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser.tsx";
 import { RouteCard } from "../../components/dashboard/Card/RouteCard.tsx";
 import { GeoAlt, Stopwatch } from "react-bootstrap-icons";
 import { SectionWrapper } from "../../components/dashboard/SectionWrapper.tsx";
