@@ -40,7 +40,7 @@ export const Header = () => {
   const items: Item[] = [
     {
       key: "profile",
-      pressHandler: () => navigate(ApplicationPath.DASHBOARD),
+      pressHandler: () => navigate(ApplicationPath.PROFILE),
       className: "hidden sm:flex h-14 gap-2",
       children: (
         <>

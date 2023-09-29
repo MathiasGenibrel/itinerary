@@ -7,7 +7,7 @@ export function Layout() {
     <>
       <section className={"flex flex-col min-h-[100dvh] justify-between"}>
         <Header />
-        <main className={"mx-8"}>
+        <main className={"px-8 max-w-screen-2xl mx-auto"}>
           <Outlet />
         </main>
         <Footer />

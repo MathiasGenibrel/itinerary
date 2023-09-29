@@ -67,7 +67,7 @@ export default function Page() {
       </h1>
 
       <SectionWrapper title="Total">
-        <section className="flex flex-wrap gap-4">
+        <section className="flex flex-wrap gap-4 sm:gap-8">
           <StatCard
             icon={<GeoAlt className="text-warning" size={16} />}
             title={"distance"}
