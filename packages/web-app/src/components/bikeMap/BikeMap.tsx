@@ -51,6 +51,23 @@ const BikeMap: React.FC = () => {
 
   const handleClickGenerate = async () => {};
 
+  // const createRoutineMachineLayer = (props) => {
+  //   const instance = L.Routing.control({
+  //     waypoints: [
+  //       L.latLng(
+  //         firstSelectedStation?.coordonnees_geo?.lat || 0,
+  //         firstSelectedStation?.coordonnees_geo?.lon || 0
+  //       ),
+  //       L.latLng(
+  //         secondSelectedStation?.coordonnees_geo?.lat || 0,
+  //         secondSelectedStation?.coordonnees_geo?.lon || 0
+  //       ),
+  //     ],
+  //   });
+
+  //   return instance;
+  // };
+
   const createRoutineMachineLayer = (props) => {
     const instance = L.Routing.control({
       waypoints: [
@@ -64,11 +81,24 @@ const BikeMap: React.FC = () => {
         ),
       ],
     });
-
+    console.log(L.Routing.Plan);
     return instance;
   };
 
+  const test = () => {
+    const p1 = new L.LatLng(
+      firstSelectedStation?.coordonnees_geo.lat || 0,
+      firstSelectedStation?.coordonnees_geo.lon || 0
+    );
+    const p2 = new L.LatLng(
+      secondSelectedStation?.coordonnees_geo.lat || 0,
+      secondSelectedStation?.coordonnees_geo.lon || 0
+    );
+    console.log(p1.distanceTo(p2) * 1);
+  };
+
   const RoutingMachine = createControlComponent(createRoutineMachineLayer);
+  // console.log(RoutingMachine);
 
   return (
     <div style={{ height: '500px', width: '100%' }}>
@@ -103,7 +133,13 @@ const BikeMap: React.FC = () => {
             </SelectItem>
           ))}
         </Select>
-        <Button color="primary" onClick={handleClickGenerate}>
+        <Button
+          color="primary"
+          onClick={() => {
+            handleClickGenerate();
+            test();
+          }}
+        >
           <Map /> Generate itinerary
         </Button>
       </div>
@@ -135,6 +171,14 @@ const BikeMap: React.FC = () => {
                 <p className="flex gap-1">
                   <PCircle />
                   {bikeStation.numdocksavailable} Places
+                </p>
+                <p className="flex gap-1">
+                  <PCircle />
+                  {bikeStation.coordonnees_geo.lat} LAT
+                </p>
+                <p className="flex gap-1">
+                  <PCircle />
+                  {bikeStation.coordonnees_geo.lon} LON
                 </p>
               </div>
             </Popup>
