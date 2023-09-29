@@ -16,6 +16,7 @@ import {
   GeoAlt,
   QuestionCircle,
 } from "react-bootstrap-icons";
+import { useEasterEgg } from "../../hooks/useEasterEgg.tsx";
 
 export interface Item {
   pressHandler: () => void;
@@ -27,6 +28,7 @@ export interface Item {
 }
 
 export const Header = () => {
+  const navbarEasterEgg = useEasterEgg();
   const [isOpen, toggleMenu] = useReducer((current) => !current, false);
   const navigate = useNavigate();
   const authDispatcher = useAuthDispatcher();
@@ -78,7 +80,11 @@ export const Header = () => {
   ];
 
   return (
-    <Navbar isMenuOpen={isOpen} onMenuOpenChange={toggleMenu}>
+    <Navbar
+      className={navbarEasterEgg}
+      isMenuOpen={isOpen}
+      onMenuOpenChange={toggleMenu}
+    >
       <NavbarBrand>
         <Link
           onPress={() => {

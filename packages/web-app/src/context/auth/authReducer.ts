@@ -1,4 +1,10 @@
-import { AuthAction, AuthActionType, AuthState } from "./types";
+import {
+  AuthAction,
+  AuthActionType,
+  AuthPayloadLogin,
+  AuthPayloadUpdate,
+  AuthState,
+} from "./types";
 import { ClientStorageRepository } from "../../helpers/repository/auth/ClientStorageRepository.ts";
 
 const clientStorage = new ClientStorageRepository(localStorage);
@@ -9,11 +15,13 @@ export const authReducer = (
 ): AuthState => {
   switch (action.type) {
     case AuthActionType.LOGIN:
-      clientStorage.saveCredential(action.payload.user);
+      const { user: loginUser } = action.payload as AuthPayloadLogin;
+
+      clientStorage.saveCredential(loginUser);
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload.user,
+        user: loginUser,
       };
 
     case AuthActionType.LOGOUT:
@@ -22,6 +30,16 @@ export const authReducer = (
         ...state,
         isAuthenticated: false,
         user: null,
+      };
+
+    case AuthActionType.UPDATE:
+      const { user: updatedUser } = action.payload as AuthPayloadUpdate;
+
+      clientStorage.saveCredential({ ...state.user!, ...updatedUser });
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: { ...state.user!, ...updatedUser },
       };
 
     default:

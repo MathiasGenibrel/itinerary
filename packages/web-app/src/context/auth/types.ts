@@ -1,8 +1,9 @@
-import { LoginResponse } from "@shared/contract/auth.ts";
+import { AccountUpdateRequest, LoginResponse } from "@shared/contract/auth.ts";
 
 export enum AuthActionType {
   LOGIN = "login",
   LOGOUT = "logout",
+  UPDATE = "update",
 }
 
 export interface AuthState {
@@ -10,13 +11,15 @@ export interface AuthState {
   user: LoginResponse | null;
 }
 
-interface AuthActionLogin {
-  type: AuthActionType.LOGIN;
-  payload: { user: LoginResponse };
+export interface AuthPayloadLogin {
+  user: LoginResponse;
 }
 
-interface AuthActionLogout {
-  type: AuthActionType.LOGOUT;
+export interface AuthPayloadUpdate {
+  user: Omit<AccountUpdateRequest, "token">;
 }
 
-export type AuthAction = AuthActionLogin | AuthActionLogout;
+export interface AuthAction {
+  type: AuthActionType;
+  payload?: AuthPayloadLogin | AuthPayloadUpdate;
+}
