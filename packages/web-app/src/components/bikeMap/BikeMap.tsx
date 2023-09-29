@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import { Bicycle, Map, PCircle } from "react-bootstrap-icons";
-import { Button, Select, SelectItem } from "@nextui-org/react";
-import "leaflet-routing-machine";
-import L from "leaflet";
-import { createControlComponent } from "@react-leaflet/core";
-import { Card } from "@nextui-org/card";
+import React, { useEffect, useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Bicycle, Map, PCircle } from 'react-bootstrap-icons';
+import { Button, Select, SelectItem } from '@nextui-org/react';
+import 'leaflet-routing-machine';
+import L from 'leaflet';
+import { createControlComponent } from '@react-leaflet/core';
+import { Card } from '@nextui-org/card';
 
 interface BikeStation {
   stationcode: string;
@@ -38,55 +38,69 @@ const BikeMap: React.FC = () => {
   useEffect(() => {
     const fetchBikeData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/bike-data");
+        const response = await fetch('http://localhost:4001/api/bike-data');
         const data = await response.json();
         setBikeData(data);
         console.log(data);
       } catch (error) {
-        console.error("Error fetching bike data", error);
+        console.error('Error fetching bike data', error);
       }
     };
     fetchBikeData();
   }, []);
 
-  const handleClickGenerate = async () => {};
+  const handleClickTest = async () => {
+    try {
+      const response = await fetch('http://localhost:4001/api/travel/all/1');
+      console.log(response);
+    } catch (error) {
+      // console.error('Error on fetch', error);
+    }
+  };
 
-  // const createRoutineMachineLayer = (props) => {
-  //   const instance = L.Routing.control({
-  //     waypoints: [
-  //       L.latLng(
-  //         firstSelectedStation?.coordonnees_geo?.lat || 0,
-  //         firstSelectedStation?.coordonnees_geo?.lon || 0
-  //       ),
-  //       L.latLng(
-  //         secondSelectedStation?.coordonnees_geo?.lat || 0,
-  //         secondSelectedStation?.coordonnees_geo?.lon || 0
-  //       ),
-  //     ],
-  //   });
+  const handleClickSave = async () => {
+    try {
+      const inputs = {
+        name: `${firstSelectedStation?.name} / ${secondSelectedStation?.name}`,
+        startPoint: firstSelectedStation?.stationcode,
+        endPoint: secondSelectedStation?.stationcode,
+        distance: distance,
+        time: time,
+        idUser: 1,
+      };
+      const response = await fetch('http://localhost:4001/api/travel/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inputs),
+      });
+      const data = await response;
+      console.log(data);
+    } catch (error) {
+      console.error('Error saving itinerary', error);
+    }
+  };
 
-  //   return instance;
-  // };
+  const [distance, setDistance] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
 
-  const createRoutineMachineLayer = (props) => {
+  const createRoutineMachineLayer = () => {
     const instance = L.Routing.control({
       waypoints: [
         L.latLng(
           firstSelectedStation?.coordonnees_geo?.lat || 0,
-          firstSelectedStation?.coordonnees_geo?.lon || 0,
+          firstSelectedStation?.coordonnees_geo?.lon || 0
         ),
         L.latLng(
           secondSelectedStation?.coordonnees_geo?.lat || 0,
-          secondSelectedStation?.coordonnees_geo?.lon || 0,
+          secondSelectedStation?.coordonnees_geo?.lon || 0
         ),
       ],
     });
-    console.log(L.Routing.Plan);
-
     instance.on('routesfound', function (e) {
-      const [startPoint, endPoint] = e.routes;
-      const summary = startPoint.summary;
-      // alert distance and time in km and minutes
+      const [point] = e.routes;
+      const summary = point.summary;
+      setDistance(Math.round(summary.totalDistance));
+      setTime(Math.round((summary.totalDistance / 15e3) * 60));
       console.log(
         'Total distance is ' +
           Math.round(summary.totalDistance) +
@@ -101,29 +115,15 @@ const BikeMap: React.FC = () => {
           Math.round((summary.totalTime % 3600) / 60) +
           ' minutes'
       );
-      // console.log('routes', routes);
     });
 
     return instance;
   };
 
-  const test = () => {
-    const p1 = new L.LatLng(
-      firstSelectedStation?.coordonnees_geo.lat || 0,
-      firstSelectedStation?.coordonnees_geo.lon || 0,
-    );
-    const p2 = new L.LatLng(
-      secondSelectedStation?.coordonnees_geo.lat || 0,
-      secondSelectedStation?.coordonnees_geo.lon || 0,
-    );
-    console.log(p1.distanceTo(p2) * 1);
-  };
-
   const RoutingMachine = createControlComponent(createRoutineMachineLayer);
-  // console.log(RoutingMachine);
 
   return (
-    <div className={"w-full"}>
+    <div className={'w-full'}>
       <div className="flex flex-col gap-3 my-3 justify-center items-center sm:flex-row">
         <Select
           label="Departure"
@@ -155,21 +155,17 @@ const BikeMap: React.FC = () => {
             </SelectItem>
           ))}
         </Select>
-        <Button
-          color="primary"
-          className={"w-full"}
-          onClick={() => {
-            handleClickGenerate();
-            test();
-          }}
-        >
-          <Map /> Generate itinerary
+        <Button color="primary" className={'w-full'} onClick={handleClickSave}>
+          <Map /> Save itinerary
+        </Button>
+        <Button color="primary" className={'w-full'} onClick={handleClickTest}>
+          <Map /> TEST
         </Button>
       </div>
       <Card>
         <MapContainer
           className={
-            "h-full aspect-square w-full sm:h-screen sm:aspect-auto sm:max-h-[48rem]"
+            'h-full aspect-square w-full sm:h-screen sm:aspect-auto sm:max-h-[48rem]'
           }
           center={[48.8566, 2.3522]}
           zoom={13}
@@ -197,14 +193,6 @@ const BikeMap: React.FC = () => {
                   <p className="flex gap-1">
                     <PCircle />
                     {bikeStation.numdocksavailable} Places
-                  </p>
-                  <p className="flex gap-1">
-                    <PCircle />
-                    {bikeStation.coordonnees_geo.lat} LAT
-                  </p>
-                  <p className="flex gap-1">
-                    <PCircle />
-                    {bikeStation.coordonnees_geo.lon} LON
                   </p>
                 </div>
               </Popup>

@@ -17,7 +17,8 @@
 }
 
 .leaflet-routing-alt {
-    background-color: white;
+    /* background-color: white; */
+    display: none;
 }
 
 /*
