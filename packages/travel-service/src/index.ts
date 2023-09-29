@@ -64,6 +64,7 @@ app.get('/api/travel/all/:idUser', async (req, res) => {
 
         travel.startPoint = dataStartPoint.results[0].coordonnees_geo
         travel.endPoint = dataEndPoint.results[0].coordonnees_geo
+        // delete travel.idUser;
       } catch (error) {
         console.error('Error fetching bike data', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -78,13 +79,17 @@ app.get('/api/travel/all/:idUser', async (req, res) => {
 
 app.post('/api/travel/save', async (req, res) => {
   //TODO: check inputs
-  const travel = new Travel();
-  travel.name = req.body.name
-  travel.startPoint = req.body.startPoint
-  travel.endPoint = req.body.endPoint
-  travel.distance = req.body.distance
-  travel.time = req.body.time
-  travel.idUser =  Number(req.body.idUser)
+  // let travel = new Travel();
+  const travel: Travel = {
+    ...req.body.travel,
+    idUser: Number(req.body.idUser)
+  }
+  // travel.name = req.body.name
+  // travel.startPoint = req.body.startPoint
+  // travel.endPoint = req.body.endPoint
+  // travel.distance = req.body.distance
+  // travel.time = req.body.time
+  // travel.idUser =  Number(req.body.idUser)
   try {
     await travelRepository.save(travel);
     res.status(201).send();
@@ -93,22 +98,31 @@ app.post('/api/travel/save', async (req, res) => {
   }
 });
 
-// app.post('/api/travel/update', async (req, res) => {
+app.post('/api/travel/update', async (req, res) => {
 //   //TODO: check inputs
-//   const travel = new Travel();
-//   travel.name = req.body.name
-//   travel.startPoint = req.body.startPoint
-//   travel.endPoint = req.body.endPoint
-//   travel.distance = req.body.distance
-//   travel.time = req.body.time
-//   travel.idUser =  Number(req.body.idUser)
-//   try {
-//     await travelRepository.save(travel);
-//     res.status(201).send();
-//   } catch (error) {
-//     res.status(500).send();
-//   }
-// });
+  // const travel = new Travel();
+  // travel.name = req.body.name
+  // travel.startPoint = req.body.startPoint
+  // travel.endPoint = req.body.endPoint
+  // travel.distance = req.body.distance
+  // travel.time = req.body.time
+  // travel.idUser =  Number(req.body.idUser)
+  const travel: Travel = {
+    ...req.body.travel
+  }
+  try {
+    await AppDataSource
+    .createQueryBuilder()
+    .update(Travel)
+    .set(travel)
+    .where("id = :id", { id: travel.id})
+    .execute()
+    res.status(204).send();
+  } catch (error) {
+    console.log(error)
+    res.status(500).send();
+  }
+});
 
 app.delete('/api/travel/delete/:id', async (req, res) => {
   //TODO: check inputs

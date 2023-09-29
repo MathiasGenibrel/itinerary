@@ -9,7 +9,7 @@ export class Travel {
   name!: string;
 
   @Column()
-  startPoint!: number
+  startPoint!: string
 
   @Column()
   endPoint!: string;
