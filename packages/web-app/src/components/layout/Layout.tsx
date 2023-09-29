@@ -6,10 +6,12 @@ export function Layout() {
   return (
     <>
       <section className={"flex flex-col min-h-[100dvh] justify-between"}>
-        <Header />
-        <main className={"px-8 w-full max-w-screen-2xl mx-auto"}>
-          <Outlet />
-        </main>
+        <section className="flex flex-col gap-2">
+          <Header />
+          <main className={"px-8 w-full max-w-screen-2xl mx-auto"}>
+            <Outlet />
+          </main>
+        </section>
         <Footer />
       </section>
     </>
