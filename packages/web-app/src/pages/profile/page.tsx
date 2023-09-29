@@ -13,7 +13,7 @@ export default function Page() {
       <section className="flex gap-2 w-full">
         <img
           alt=""
-          className="w-20 h-20 aspect-square rounded-2xl shadow"
+          className="w-20 h-20 object-cover aspect-square rounded-2xl shadow"
           src="/avatar.webp"
         />
         <section className="w-full overflow-hidden">
