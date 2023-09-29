@@ -3,11 +3,12 @@ import { Request, Response } from "express";
 import { User } from "../entities/User";
 import bcrypt from 'bcrypt';
 import { generateToken } from '../middlewares/auth';
+import { schema } from "../schemas/authSchema";
 
 const saltRounds = parseInt(`${process.env.SALTROUNDS}`);
 
 export const registerController = async (req: Request, res: Response) => {
-    const { email, username, password } = req.body;
+    const { email, username, password } = schema.register.parse(req.body);
 
 
 
@@ -28,7 +29,7 @@ export const registerController = async (req: Request, res: Response) => {
 }
 
 export const loginController = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    const { email, password } = schema.login.parse(req.body);
 
     try {
         const user = await userRepository.findOneBy({ email:email });
