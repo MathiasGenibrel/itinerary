@@ -17,11 +17,11 @@ export const RouteCard: FC<Props> = ({ itinerary }) => {
       key={itinerary.id}
       isFooterBlurred
       radius="lg"
-      className="border-none w-fit basis-72	grow"
+      className="border-none w-fit basis-72	grow itinerary-card"
     >
       <Image
-        alt="Woman listing to music"
-        className="object-cover w-full aspect-square"
+        alt=""
+        className="object-cover w-full max-w-full max-h-96"
         src="/map_background.jpg"
       />
       <CardFooter className="justify-between gap-4 bg-black/30 border-white/20 border-1 overflow-hidden py-1 absolute rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
