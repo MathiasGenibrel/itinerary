@@ -26,7 +26,7 @@ export default function Page() {
           </section>
           <p
             className="opacity-60 truncate"
-            title="Bring home the bacon !, Bring home the bacon ! Bring home the bacon!"
+            title="Adventure awaits, build your world, and always stay vigilant, but always remember: Never dig down!"
           >
             Adventure awaits, build your world, and always stay vigilant, but
             always remember: Never dig down!
