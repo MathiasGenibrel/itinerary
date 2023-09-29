@@ -89,7 +89,7 @@ export const ProfileForm: FC = () => {
         type={"submit"}
         isLoading={registerFormHandler.isLoading}
       >
-        Create an account
+        Update account
       </Button>
     </form>
   );

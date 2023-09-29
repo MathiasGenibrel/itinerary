@@ -8,4 +8,6 @@ export const useEasterEgg = () => {
     document.body.classList.add("rotate-180");
     return "top-auto bottom-0";
   }
+
+  document.body.classList.remove("rotate-180");
 };
