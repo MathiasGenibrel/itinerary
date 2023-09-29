@@ -31,7 +31,7 @@ export const profileUpdateController = async (req: Request, res: Response) => {
         user.password = password;
 
         await userRepository.save(user);
-        res.json({ message: 'User updated successfully' });
+        res.status(204).send();
     } else {
         res.status(404).json({ message: 'User not found' });
     }
