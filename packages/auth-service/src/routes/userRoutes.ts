@@ -1,45 +1,91 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middlewares/auth';
-import { Request, Response, NextFunction } from 'express';
+import { profileController, profileDeleteController, profileUpdateController } from '../controller/controllerAuthController';
 
 const router = Router();
 
 /**
  * @swagger
- * /profil:
+ * /profile:
  *   get:
- *     summary: Obtenir le profil de l'utilisateur
- *     description: Récupère le profil de l'utilisateur authentifié en utilisant un token JWT valide.
+ *     summary: Get user profile
+ *     description: Retrieves the profile of the authenticated user using a valid JWT token.
  *     produces:
  *       - application/json
  *     security:
  *       - JWTAuth: []
  *     responses:
  *       200:
- *         description: Profil de l'utilisateur récupéré avec succès.
+ *         description: User profile retrieved successfully.
  *       401:
- *         description: Token JWT invalide ou manquant.
+ *         description: Invalid or missing JWT token.
  *       404:
- *         description: Utilisateur introuvable.
+ *         description: User not found.
  *       500:
- *         description: Erreur lors de la récupération du profil.
+ *         description: Error while retrieving the profile.
  */
-router.get('/profil', (req, res,next)=>authenticateToken(req:Request, res;Response,next:NextFunction), async (req, res,) => {
-    const { id } = req.body;
-  
-    try {
-      const user = await userRepository.findOneBy({id:id});
-  
-      if (user) {
-        res.json(user);
-      } else {
-        res.status(404).json({ message: 'Utilisateur introuvable' });
-      }
-    } catch (error) {
-      res.status(500).json({ message: 'Erreur lors de la récupération du profil' });
-    }
-  });
+router.get("/profile", authenticateToken, profileController);
+
+/**
+ * @swagger
+ * /profile/updateUser:
+ *   put:
+ *     summary: Update user
+ *     description: Updates the information of the authenticated user using a valid JWT token.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - JWTAuth: []
+ *     parameters:
+ *       - name: email
+ *         description: New email address of the user.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: username
+ *         description: New username of the user.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         description: New password of the user.
+ *         in: formData
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully.
+ *       401:
+ *         description: Invalid or missing JWT token.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Error while updating the user.
+ */
+router.put('/profile/updateUser', authenticateToken, profileUpdateController);
+
+/**
+ * @swagger
+ * /profile/deleteUser:
+ *   delete:
+ *     summary: Delete user
+ *     description: Deletes the authenticated user using a valid JWT token.
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - JWTAuth: []
+ *     responses:
+ *       200:
+ *         description: User deleted successfully.
+ *       401:
+ *         description: Invalid or missing JWT token.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Error while deleting the user.
+ */
+router.delete('/profile/deleteUser', authenticateToken, profileDeleteController);
 
 export function configureUserRoutes(app: Router) {
-  app.use('/user', router);
+  app.use('/', router);
 }

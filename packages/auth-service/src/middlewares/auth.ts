@@ -1,31 +1,45 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../entities/User';
+import { User } from './../entities/User';
 
-const verifyToken = jwt.verify;
 const key_token = `${process.env.TOKEN}`;
+const verifyToken = jwt.verify;
 
 declare global {
-  namespace Express {
-    interface Request {
-      user?: User; // Declare the 'user' property on the Request object
+    namespace Express {
+      interface Request {
+        user?: User;
+      }
     }
   }
+
+function generateToken(user: User) {
+    const payload = {
+        id: user.id,
+        email: user.email,
+      };
+    
+      const token = jwt.sign(payload, key_token, {
+        expiresIn: '1h',
+      });
+    
+      return token;
 }
 
-export const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
-  
-const token = req.header('Authorization');
+async function authenticateToken(req: Request, res: Response, next: NextFunction) {
+    const token = req.header('Authorization');
 
-  if (!token) {
-    return res.status(401).json({ error: 'Token JWT manquant' });
-  }
+    if (!token) {
+      return res.status(401).json({ error: 'Token JWT manquant' });
+    }
+    
+    try {
+      const decoded = await verifyToken(token, key_token);
+      req.user = decoded as User;
+      next();
+    } catch (error) {
+      return res.status(401).json({ error: 'Token JWT invalide' });
+    }
+}
 
-  try {
-    const decoded = await verifyToken(token, key_token);
-    req.user = decoded as User;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Token JWT invalide' });
-  }
-};
+export { generateToken, authenticateToken };

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { Router } from 'express';
+import routes from './../routes/index';
 
 export function configureExpressApp(app: Router) {
   const corsOptions = {
@@ -12,5 +13,6 @@ export function configureExpressApp(app: Router) {
   app.use(express.json());
   app.use(cors(corsOptions));
 
-  import('./../routes/index.js');
+  app.use('/', routes);
+
 }
