@@ -17,6 +17,7 @@ export const useLoadingTravels = () => {
   const notifyUser = () => {
     toast.promise(
       async () => {
+        setLoader(true);
         return await travelService.getAll(user.id);
       },
       {
