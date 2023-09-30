@@ -56,4 +56,8 @@ export const profileDeleteController = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error while deleting the user' });
     }
 };
+
+export const verifyTokenController = async (req: Request, res: Response) => {
+    res.send(true);
+};
   

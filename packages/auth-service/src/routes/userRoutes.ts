@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middlewares/auth';
-import { profileController, profileDeleteController, profileUpdateController } from '../controller/AuthController';
+import { profileController, profileDeleteController, profileUpdateController, verifyTokenController } from '../controller/AuthController';
 
 const router = Router();
 
@@ -85,6 +85,8 @@ router.put('/profile/updateUser', authenticateToken, profileUpdateController);
  *         description: Error while deleting the user.
  */
 router.delete('/profile/deleteUser', authenticateToken, profileDeleteController);
+
+router.get("/verify", authenticateToken, verifyTokenController);
 
 export function configureUserRoutes(app: Router) {
   app.use('/', router);
