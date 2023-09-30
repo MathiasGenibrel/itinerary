@@ -5,10 +5,10 @@ import { configureExpressApp } from './config/app';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 configureExpressApp(app);
 
 app.listen(PORT, () => {
-  console.log(`Serveur Express écoutant sur le port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
