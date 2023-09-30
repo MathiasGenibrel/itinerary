@@ -1,8 +1,9 @@
-import BikeMap from '../components/bikeMap/BikeMap';
+import { StationMapWrapper } from "../components/map/StationMapWrapper.tsx";
+
 export const App = () => {
   return (
     <>
-      <BikeMap />
+      <StationMapWrapper />
     </>
   );
 };

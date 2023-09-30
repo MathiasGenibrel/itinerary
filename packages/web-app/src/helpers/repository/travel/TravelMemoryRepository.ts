@@ -3,6 +3,8 @@ import { FakeTimeout } from "../../FakeTimeout.ts";
 import { Travel, TravelRequestUpdate } from "@shared/contract/travel.ts";
 import { LoginResponse } from "@shared/contract/auth.ts";
 import { faker } from "@faker-js/faker";
+import { Station } from "../../../components/map/station-types.ts";
+import { stations } from "../../../mocks/stations.ts";
 
 const createTravel = (): Travel => ({
   id: faker.number.int(),
@@ -31,6 +33,14 @@ export class TravelMemoryRepository
     if (!this.isSuccessful())
       throw new Error("An error occurred with your request, Try again later");
     return;
+  }
+
+  public async getStations(): Promise<Station[]> {
+    await this.delay();
+
+    if (!this.isSuccessful())
+      throw new Error("An error occurred with your request, Try again later");
+    return stations;
   }
 
   async getAll(_: LoginResponse["id"]): Promise<Travel[]> {
