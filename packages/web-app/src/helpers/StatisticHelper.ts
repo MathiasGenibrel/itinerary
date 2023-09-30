@@ -23,7 +23,7 @@ export class StatisticHelper {
     if (totalTimeInMinutes < 60)
       return {
         unit: "min",
-        value: StatisticHelper.transformMinutesToHours(totalTimeInMinutes),
+        value: totalTimeInMinutes,
       };
 
     return {
