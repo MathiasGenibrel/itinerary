@@ -1,12 +1,13 @@
-import { TravelCardList } from "../../components/dashboard/Card/TravelCard.tsx";
-import { GeoAlt, Stopwatch } from "react-bootstrap-icons";
-import { SectionWrapper } from "../../components/dashboard/SectionWrapper.tsx";
-import { StatCard } from "../../components/dashboard/Card/StatCard.tsx";
+import { TravelCardList } from "../../components/dashboard/Card/TravelCard";
+import { SectionWrapper } from "../../components/dashboard/SectionWrapper";
+import { StatCardList } from "../../components/dashboard/Card/StatCard";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
-import { SkeletonTravelCardList } from "../../components/dashboard/Card/SkeletonTravelCard.tsx";
+import { SkeletonTravelCardList } from "../../components/dashboard/Card/SkeletonTravelCard";
+import { useLoadingTravels } from "../../components/dashboard/useLoadingTravels";
+import { SkeletonStatCardList } from "../../components/dashboard/Card/SkeletonStatCard.tsx";
+import { StatisticHelper } from "../../helpers/StatisticHelper.ts";
 import { ErrorLoadingModal } from "../../components/dashboard/ErrorLoadingModal.tsx";
-import { useLoadingTravels } from "../../components/dashboard/useLoadingTravels.tsx";
 
 export default function Page() {
   const { user, notifyUser, onOpenChange, isOpen, travels, isLoading } =
@@ -43,16 +44,16 @@ export default function Page() {
         </h1>
         <SectionWrapper title="Total">
           <section className="flex flex-wrap gap-4 sm:gap-8">
-            <StatCard
-              icon={<GeoAlt className="text-warning" size={16} />}
-              title={"distance"}
-              statistic={{ unit: "km", value: "104" }}
-            />
-            <StatCard
-              icon={<Stopwatch className="text-warning" size={16} />}
-              title={"time"}
-              statistic={{ unit: "h", value: "19:35" }}
-            />
+            {isLoading ? (
+              <SkeletonStatCardList />
+            ) : (
+              <>
+                <StatCardList
+                  time={StatisticHelper.calculateTotalTime(travels)}
+                  distance={StatisticHelper.calculateTotalDistance(travels)}
+                />
+              </>
+            )}
           </section>
         </SectionWrapper>
         <SectionWrapper title={`Travel (${travels.length})`}>

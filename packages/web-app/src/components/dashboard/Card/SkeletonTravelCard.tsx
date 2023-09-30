@@ -1,6 +1,11 @@
 import { Skeleton } from "@nextui-org/react";
 import { Card } from "@nextui-org/card";
 
+const NUMBER_OF_CARD: number = 8;
+const TEMPORARY_ARRAY = Array.from({ length: NUMBER_OF_CARD }, () =>
+  Math.random(),
+);
+
 const SkeletonTravelCard = () => {
   return (
     <Card className="w-full basis-72 grow aspect-square space-y-2">
@@ -20,8 +25,5 @@ const SkeletonTravelCard = () => {
 };
 
 export const SkeletonTravelCardList = () => {
-  const NUMBER_OF_CARD = 9;
-  const tempArray = Array(NUMBER_OF_CARD).fill(Math.random());
-
-  return tempArray.map((id) => <SkeletonTravelCard key={id} />);
+  return TEMPORARY_ARRAY.map((id) => <SkeletonTravelCard key={id} />);
 };

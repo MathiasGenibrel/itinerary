@@ -23,7 +23,7 @@ export class TravelMemoryRepository
   extends FakeTimeout
   implements TravelRepository
 {
-  private readonly percentageSuccessRating: number = 0;
+  private readonly percentageSuccessRating: number = 0.6;
 
   public async create(_: Travel): Promise<void> {
     await this.delay();
