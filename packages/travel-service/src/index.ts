@@ -1,6 +1,7 @@
 import express, {} from 'express';
 import { DataSource } from "typeorm"
 import { Travel } from './db/Entities/Travel'
+import { verifyTokenMiddleware } from '../verifyToken'
 
 // import travelRouter from './router/TravelRouter'
 const app = express();
@@ -46,7 +47,7 @@ app.get('/api/bike-data', async (req, res) => {
   }
 });
 
-app.get('/api/travel/all/:idUser', async (req, res) => {
+app.get('/api/travel/all/:idUser', verifyTokenMiddleware, async (req, res) => {
   //TODO: check inputs
   try {
   let allTravels = await travelRepository.find({where : {idUser: Number(req.params.idUser)}})
@@ -77,7 +78,7 @@ app.get('/api/travel/all/:idUser', async (req, res) => {
   }
 });
 
-app.post('/api/travel/save', async (req, res) => {
+app.post('/api/travel/save', verifyTokenMiddleware, async (req, res) => {
   //TODO: check inputs
   // let travel = new Travel();
   const travel: Travel = {
