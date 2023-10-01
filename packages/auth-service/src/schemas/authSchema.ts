@@ -11,18 +11,6 @@ const MIN_PASSWORD_LENGTH = 12;
 const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.-_])[A-Za-z\d@$!%*?&.-_]+$/;
 
-export interface LoginInputs {
-  email: string;
-  password: string;
-}
-
-export interface RegisterInputs {
-  email: string;
-  username: string;
-  password: string;
-  confirm: string;
-}
-
 export const schema = {
   login: z.object({
     email: z.string().email(),
@@ -36,17 +24,16 @@ export const schema = {
       }),
   }),
 
-  register: z
-    .object({
-      email: z.string().email(),
-      username: z.string().max(64),
-      password: z
-        .string()
-        .min(MIN_PASSWORD_LENGTH)
-        .max(64)
-        .refine((password) => PASSWORD_REGEX.test(password), {
-          message:
-            "The password must contain at least one upper case letter, one lower case letter, one number and one special character (@$!%*?&.-_).",
-        }),
-    })
+  register: z.object({
+    email: z.string().email(),
+    username: z.string().max(64),
+    password: z
+      .string()
+      .min(MIN_PASSWORD_LENGTH)
+      .max(64)
+      .refine((password) => PASSWORD_REGEX.test(password), {
+        message:
+          "The password must contain at least one upper case letter, one lower case letter, one number and one special character (@$!%*?&.-_).",
+      }),
+  }),
 };

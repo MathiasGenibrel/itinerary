@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { AuthMemoryRepository } from "../../helpers/repository/auth/AuthMemoryRepository.ts";
 import { AuthRepository } from "../../helpers/repository/auth/AuthRepository.ts";
 import { useAuthDispatcher } from "../../context/auth/hooks/useAuthDispatcher.tsx";
 import { AccountUpdateRequest } from "@shared/contract/auth.ts";
 import { AuthActionType } from "../../context/auth/types.ts";
 import { useAuthenticatedUser } from "../../hooks/useAuthenticatedUser.tsx";
+import { AuthRemoteRepository } from "../../helpers/repository/auth/AuthRemoteRepository.ts";
 
-const authService: AuthRepository = new AuthMemoryRepository();
+const authService: AuthRepository = new AuthRemoteRepository();
 
 export const useProfileForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);

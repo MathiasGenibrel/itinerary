@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { AuthRepository } from "../../../../helpers/repository/auth/AuthRepository.ts";
-import { AuthMemoryRepository } from "../../../../helpers/repository/auth/AuthMemoryRepository.ts";
 import { LoginRequest, LoginResponse } from "@shared/contract/auth.ts";
 import { useAuthDispatcher } from "../../../../context/auth/hooks/useAuthDispatcher.tsx";
 import { AuthActionType } from "../../../../context/auth/types.ts";
 import { useNavigate } from "react-router-dom";
 import { ApplicationPath } from "../../../../pages/router.tsx";
+import { AuthRemoteRepository } from "../../../../helpers/repository/auth/AuthRemoteRepository.ts";
 
-const authService: AuthRepository = new AuthMemoryRepository();
+const authService: AuthRepository = new AuthRemoteRepository();
 
 export const useLoginForm = () => {
   const [isLoading, setFormLoading] = useState<boolean>(false);
