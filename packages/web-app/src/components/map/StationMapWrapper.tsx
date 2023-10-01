@@ -1,12 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import React, { useEffect, useState } from "react";
 import { Save, Trash } from "react-bootstrap-icons";
 import { Button } from "@nextui-org/react";
-import "leaflet-routing-machine";
-import L from "leaflet";
-import { createControlComponent } from "@react-leaflet/core";
-import { Card } from "@nextui-org/card";
 import { Station } from "./station-types.ts";
 import { useStation } from "./useStation.tsx";
 import { toast, Toaster } from "sonner";
@@ -14,10 +8,9 @@ import { Loader } from "./Loader.tsx";
 import { TravelMemoryRepository } from "../../helpers/repository/travel/TravelMemoryRepository.ts";
 import { TravelRequestUpdate } from "@shared/contract/travel.ts";
 import { fakerFR } from "@faker-js/faker";
-import { SelectedStationMarker } from "./marker/SelectedStationMarker.tsx";
-import { StationMarkerList } from "./marker/StationMarkerList.tsx";
 import { StationSelector } from "./StationSelector.tsx";
 import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
+import { StationMap } from "./StationMap.tsx";
 
 const travelRepository = new TravelMemoryRepository();
 
@@ -68,43 +61,6 @@ export const StationMapWrapper: React.FC = () => {
   const [distance, setDistance] = useState<number>(0);
   const [time, setTime] = useState<number>(0);
 
-  const createRoutineMachineLayer = () => {
-    const instance = L.Routing.control({
-      waypoints: [
-        L.latLng(
-          selectedStations.starting?.coordonnees_geo?.lat || 0,
-          selectedStations.starting?.coordonnees_geo?.lon || 0,
-        ),
-        L.latLng(
-          selectedStations.arrival?.coordonnees_geo?.lat || 0,
-          selectedStations.arrival?.coordonnees_geo?.lon || 0,
-        ),
-      ],
-    });
-    instance.on("routesfound", function (e) {
-      const [point] = e.routes;
-      const summary = point.summary;
-      setDistance(Math.round(summary.totalDistance));
-      setTime(Math.round((summary.totalDistance / 15e3) * 60));
-      console.log(
-        "Total distance is " +
-          Math.round(summary.totalDistance) +
-          " meters and total time is " +
-          Math.round((summary.totalDistance / 15e3) * 60) +
-          " minutes",
-      );
-      console.log(
-        "Total distance is " +
-          Math.round(summary.totalDistance) +
-          " meters and total time is " +
-          Math.round((summary.totalTime % 3600) / 60) +
-          " minutes",
-      );
-    });
-
-    return instance;
-  };
-
   const startingStationHandler = (station: Station) =>
     setSelectedStations((current) => ({
       ...current,
@@ -119,8 +75,6 @@ export const StationMapWrapper: React.FC = () => {
 
   const clearHandler = () =>
     setSelectedStations({ starting: null, arrival: null });
-
-  const RoutingMachine = createControlComponent(createRoutineMachineLayer);
 
   return (
     <section className={"w-full"}>
@@ -160,48 +114,10 @@ export const StationMapWrapper: React.FC = () => {
         {isLoading && <Loader />}
         <StationMap
           stations={stations}
-          RoutingMachine={RoutingMachine}
           startingStation={selectedStations.starting}
           arrivalStation={selectedStations.arrival}
         />
       </section>
     </section>
-  );
-};
-
-interface StationMapProps {
-  stations: Station[];
-}
-
-const StationMap: FC<StationMapProps> = ({
-  stations,
-  RoutingMachine,
-  startingStation,
-  arrivalStation,
-}) => {
-  return (
-    <Card className="flex justify-center items-center w-full h-full basis-72 grow aspect-square space-y-2">
-      <MapContainer
-        className="h-full w-full aspect-square z-0"
-        center={[48.8566, 2.3522]}
-        zoom={12}
-        maxZoom={18}
-        minZoom={10}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-        {startingStation && arrivalStation ? (
-          <SelectedStationMarker
-            startingStation={startingStation}
-            arrivalStation={arrivalStation}
-          />
-        ) : (
-          <StationMarkerList stations={stations} />
-        )}
-        {startingStation && arrivalStation && <RoutingMachine />}
-      </MapContainer>
-    </Card>
   );
 };
