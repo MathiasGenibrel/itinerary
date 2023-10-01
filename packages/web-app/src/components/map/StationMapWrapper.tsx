@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { Save, Trash } from "react-bootstrap-icons";
 import { Button } from "@nextui-org/react";
-import { Station } from "./station-types.ts";
-import { useStation } from "./useStation.tsx";
-import { toast, Toaster } from "sonner";
+import { useStation } from "./hooks/useStation.tsx";
+import { Toaster } from "sonner";
 import { Loader } from "./Loader.tsx";
-import { TravelMemoryRepository } from "../../helpers/repository/travel/TravelMemoryRepository.ts";
-import { TravelRequestUpdate } from "@shared/contract/travel.ts";
-import { fakerFR } from "@faker-js/faker";
 import { StationSelector } from "./StationSelector.tsx";
-import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
 import { StationMap } from "./StationMap.tsx";
+import { useSelectedStation } from "./hooks/useSelectedStation.tsx";
 
-const travelRepository = new TravelMemoryRepository();
-
-interface SelectedStations {
-  starting: Station | null;
-  arrival: Station | null;
-}
-
-export const StationMapWrapper: React.FC = () => {
-  const auth = useAuth();
+export const StationMapWrapper: FC = () => {
   const { stations, isLoading, toastHandler } = useStation();
-  const [selectedStations, setSelectedStations] =
-    React.useState<SelectedStations>({ starting: null, arrival: null });
+  const {
+    selectedStations,
+    saveStationHandler,
+    arrivalStationHandler,
+    startingStationHandler,
+    clearHandler,
+  } = useSelectedStation();
 
   useEffect(() => {
     toastHandler();
@@ -34,47 +27,6 @@ export const StationMapWrapper: React.FC = () => {
     - User is connected => Modal with form to choose the name of travel, with two button => [SaveAndClose, SaveAndDownload]
     - User is not connected => Modal to logging-in or create an account, and after that, open the modal to save travel
    */
-  const handleClickSave = () => {
-    if (!auth.state.isAuthenticated)
-      throw new Error("Use need to be authenticated");
-    if (!selectedStations.starting || !selectedStations.arrival)
-      throw new Error("Starting station or Arrival station cannot be null");
-
-    const inputs: TravelRequestUpdate = {
-      name: fakerFR.location.street(),
-      startPoint: selectedStations.starting.stationcode,
-      endPoint: selectedStations.arrival.stationcode,
-      distance: String(distance),
-      time: time,
-    };
-
-    toast.promise(travelRepository.create(inputs, auth.state.user!.id), {
-      loading: "Save travel in progress...",
-      success: "Your travel has been saved !",
-      error: (error: Error) => {
-        console.error(error.message);
-        return error.message;
-      },
-    });
-  };
-
-  const [distance, setDistance] = useState<number>(0);
-  const [time, setTime] = useState<number>(0);
-
-  const startingStationHandler = (station: Station) =>
-    setSelectedStations((current) => ({
-      ...current,
-      starting: station,
-    }));
-
-  const arrivalStationHandler = (station: Station) =>
-    setSelectedStations((current) => ({
-      ...current,
-      arrival: station,
-    }));
-
-  const clearHandler = () =>
-    setSelectedStations({ starting: null, arrival: null });
 
   return (
     <section className={"w-full"}>
@@ -103,7 +55,7 @@ export const StationMapWrapper: React.FC = () => {
           <Button
             color="primary"
             className={"grow"}
-            onClick={handleClickSave}
+            onClick={saveStationHandler}
             isDisabled={!selectedStations.starting || !selectedStations.arrival}
           >
             <Save /> Save travel
