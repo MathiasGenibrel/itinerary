@@ -23,7 +23,7 @@ export class StatisticHelper {
     if (totalTimeInMinutes < 60)
       return {
         unit: "min",
-        value: totalTimeInMinutes,
+        value: Math.round(totalTimeInMinutes),
       };
 
     return {
@@ -48,8 +48,6 @@ export class StatisticHelper {
   private static transformMetersToKilometers(meters: number): number {
     const kilometers = meters / 1e3;
 
-    console.log("KILOMETERS: ", kilometers);
-
     if (kilometers < 10) return Number(kilometers.toFixed(2));
     if (kilometers < 100) return Number(kilometers.toFixed(1));
     return Number(kilometers.toFixed(0));
@@ -57,8 +55,6 @@ export class StatisticHelper {
 
   private static transformMinutesToHours(minutes: number): number {
     const hours = minutes / 60; // Divide by 60 minutes to transform in hour
-
-    console.log("HOUR: ", hours);
 
     if (hours > 10) return Number(hours.toFixed(0));
     return Number(hours.toFixed(1));

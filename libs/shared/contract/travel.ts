@@ -1,4 +1,5 @@
 import { PointGPS } from "./pdf";
+import { LoginResponse } from "@shared/contract/auth";
 
 export interface Travel {
   id: number;
@@ -7,6 +8,11 @@ export interface Travel {
   endPoint: PointGPS;
   distance: string;
   time: number;
+}
+
+export interface TravelEntity extends TravelRequestUpdate {
+  id: Travel["id"];
+  idUser: LoginResponse["id"];
 }
 
 export interface TravelRequestUpdate
@@ -23,6 +29,6 @@ export interface TravelRequestUpdate
 }
 
 export interface TravelRequestCreate {
-  travel: Travel
+  travel: TravelRequestUpdate;
   idUser: number;
 }
