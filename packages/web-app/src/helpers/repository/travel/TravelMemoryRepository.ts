@@ -32,13 +32,18 @@ export class TravelMemoryRepository
   private readonly percentageSuccessRating: number = 1;
 
   public async create(
-    _: TravelRequestCreate,
-    __: LoginResponse["id"],
+    travelRequest: TravelRequestCreate,
+    userID: LoginResponse["id"],
   ): Promise<void> {
     await this.delay();
 
     if (!this.isSuccessful())
       throw new Error("An error occurred with your request, Try again later");
+
+    console.log("[TRAVEL REQUEST] : ", {
+      travel: travelRequest,
+      idUser: userID,
+    });
     return;
   }
 
