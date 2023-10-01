@@ -6,12 +6,40 @@ import { FC } from "react";
 import { Travel } from "@shared/contract/travel.ts";
 import { Card } from "@nextui-org/card";
 import { DropdownOptions } from "./DropdownOptions.tsx";
+import { toast } from "sonner";
+import { PdfRemoteRepository } from "../../../helpers/repository/pdf/PdfRemoteRepository.ts";
+import { fakerFR } from "@faker-js/faker";
+import { useAuthenticatedUser } from "../../../hooks/useAuthenticatedUser.tsx";
 
 interface Props {
   travel: Travel;
 }
 
+const pdfRepository = new PdfRemoteRepository();
+
 const TravelCard: FC<Props> = ({ travel }) => {
+  const user = useAuthenticatedUser();
+  const downloadHandler = () => {
+    toast.promise(
+      pdfRepository.download({
+        name: fakerFR.location.street(),
+        token: user.token,
+        itinerary: travel.id,
+        points: [travel.startPoint, travel.endPoint],
+      }),
+      {
+        loading: "Download in progress...",
+        success: () => {
+          return "Your download is done";
+        },
+        error: (error: Error) => {
+          console.error(error);
+          return error.message;
+        },
+      },
+    );
+  };
+
   return (
     <Card
       key={travel.id}
@@ -35,6 +63,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
             radius="lg"
             size="sm"
             startContent={<Download />}
+            onPress={downloadHandler}
           >
             Download
           </Button>
