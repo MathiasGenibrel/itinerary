@@ -1,62 +1,68 @@
 import React, { FC, useEffect, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Bicycle, Map, PCircle } from "react-bootstrap-icons";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { Save, Trash } from "react-bootstrap-icons";
+import { Button } from "@nextui-org/react";
 import "leaflet-routing-machine";
 import L from "leaflet";
 import { createControlComponent } from "@react-leaflet/core";
 import { Card } from "@nextui-org/card";
 import { Station } from "./station-types.ts";
+import { useStation } from "./useStation.tsx";
+import { toast, Toaster } from "sonner";
+import { Loader } from "./Loader.tsx";
+import { TravelMemoryRepository } from "../../helpers/repository/travel/TravelMemoryRepository.ts";
+import { TravelRequestUpdate } from "@shared/contract/travel.ts";
+import { fakerFR } from "@faker-js/faker";
+import { SelectedStationMarker } from "./marker/SelectedStationMarker.tsx";
+import { StationMarkerList } from "./marker/StationMarkerList.tsx";
+import { StationSelector } from "./StationSelector.tsx";
+import { useAuth } from "../../context/auth/hooks/useAuth.tsx";
+
+const travelRepository = new TravelMemoryRepository();
+
+interface SelectedStations {
+  starting: Station | null;
+  arrival: Station | null;
+}
 
 export const StationMapWrapper: React.FC = () => {
-  const [stations, setStations] = useState<Station[]>([]);
-  const [startingStation, setStartingStation] = React.useState<Station | null>(
-    null,
-  );
-  const [arrivalStation, setArrivalStation] = React.useState<Station | null>(
-    null,
-  );
+  const auth = useAuth();
+  const { stations, isLoading, toastHandler } = useStation();
+  const [selectedStations, setSelectedStations] =
+    React.useState<SelectedStations>({ starting: null, arrival: null });
 
   useEffect(() => {
-    const fetchBikeData = async () => {
-      try {
-        const response = await fetch("http://localhost:4001/api/bike-data");
-        const data = await response.json();
-        setStations(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching bike data", error);
-      }
-    };
-    fetchBikeData();
+    toastHandler();
   }, []);
 
   /*
-  TODO: Open a Modal when a user click on "SAVE":
+  TODO: Open a Modal when a auth click on "SAVE":
     - User is connected => Modal with form to choose the name of travel, with two button => [SaveAndClose, SaveAndDownload]
     - User is not connected => Modal to logging-in or create an account, and after that, open the modal to save travel
    */
-  const handleClickSave = async () => {
-    try {
-      const inputs = {
-        name: `${startingStation?.name} / ${arrivalStation?.name}`,
-        startPoint: startingStation?.stationcode,
-        endPoint: arrivalStation?.stationcode,
-        distance: distance,
-        time: time,
-        idUser: 1,
-      };
-      const response = await fetch("http://localhost:4001/api/travel/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(inputs),
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error saving itinerary", error);
-    }
+  const handleClickSave = () => {
+    if (!auth.state.isAuthenticated)
+      throw new Error("Use need to be authenticated");
+    if (!selectedStations.starting || !selectedStations.arrival)
+      throw new Error("Starting station or Arrival station cannot be null");
+
+    const inputs: TravelRequestUpdate = {
+      name: fakerFR.location.street(),
+      startPoint: selectedStations.starting.stationcode,
+      endPoint: selectedStations.arrival.stationcode,
+      distance: String(distance),
+      time: time,
+    };
+
+    toast.promise(travelRepository.create(inputs, auth.state.user!.id), {
+      loading: "Save travel in progress...",
+      success: "Your travel has been saved !",
+      error: (error: Error) => {
+        console.error(error.message);
+        return error.message;
+      },
+    });
   };
 
   const [distance, setDistance] = useState<number>(0);
@@ -66,12 +72,12 @@ export const StationMapWrapper: React.FC = () => {
     const instance = L.Routing.control({
       waypoints: [
         L.latLng(
-          startingStation?.coordonnees_geo?.lat || 0,
-          startingStation?.coordonnees_geo?.lon || 0,
+          selectedStations.starting?.coordonnees_geo?.lat || 0,
+          selectedStations.starting?.coordonnees_geo?.lon || 0,
         ),
         L.latLng(
-          arrivalStation?.coordonnees_geo?.lat || 0,
-          arrivalStation?.coordonnees_geo?.lon || 0,
+          selectedStations.arrival?.coordonnees_geo?.lat || 0,
+          selectedStations.arrival?.coordonnees_geo?.lon || 0,
         ),
       ],
     });
@@ -99,52 +105,67 @@ export const StationMapWrapper: React.FC = () => {
     return instance;
   };
 
+  const startingStationHandler = (station: Station) =>
+    setSelectedStations((current) => ({
+      ...current,
+      starting: station,
+    }));
+
+  const arrivalStationHandler = (station: Station) =>
+    setSelectedStations((current) => ({
+      ...current,
+      arrival: station,
+    }));
+
+  const clearHandler = () =>
+    setSelectedStations({ starting: null, arrival: null });
+
   const RoutingMachine = createControlComponent(createRoutineMachineLayer);
 
   return (
-    <div className={"w-full"}>
-      <div className="flex flex-col gap-3 my-3 justify-center items-center sm:flex-row">
-        <Select
-          label="Departure"
-          placeholder="Select a station"
-          className="flex w-full"
-        >
-          {stations.map((station) => (
-            <SelectItem
-              key={station.stationcode}
-              value={station.name}
-              onClick={() => setStartingStation(station)}
-            >
-              {station.name}
-            </SelectItem>
-          ))}
-        </Select>
-        <Select
-          label="Arrival"
-          placeholder="Select a station"
-          className="flex w-full"
-        >
-          {stations.map((station) => (
-            <SelectItem
-              key={station.stationcode}
-              value={station.name}
-              onClick={() => setArrivalStation(station)}
-            >
-              {station.name}
-            </SelectItem>
-          ))}
-        </Select>
-        <Button color="primary" className={"w-full"} onClick={handleClickSave}>
-          <Map /> Save itinerary
-        </Button>
-      </div>
-      <StationMap
-        stations={stations}
-        RoutingMachine={RoutingMachine}
-        startingStation={startingStation}
-        arrivalStation={arrivalStation}
-      />
-    </div>
+    <section className={"w-full"}>
+      <Toaster richColors />
+      <section className="flex flex-col gap-3 my-3 justify-center items-center sm:flex-row">
+        <StationSelector
+          label={"Starting"}
+          stations={stations}
+          selectHandler={startingStationHandler}
+          selectedStation={selectedStations.starting}
+        />
+        <StationSelector
+          label={"Arrival"}
+          stations={stations}
+          selectHandler={arrivalStationHandler}
+          selectedStation={selectedStations.arrival}
+        />
+        <section className="flex gap-2 w-full">
+          <Button
+            color="default"
+            onClick={clearHandler}
+            isDisabled={!selectedStations.starting && !selectedStations.arrival}
+          >
+            <Trash /> Clear
+          </Button>
+          <Button
+            color="primary"
+            className={"grow"}
+            onClick={handleClickSave}
+            isDisabled={!selectedStations.starting || !selectedStations.arrival}
+          >
+            <Save /> Save travel
+          </Button>
+        </section>
+      </section>
+      <section className="relative h-full aspect-square w-full sm:h-screen sm:aspect-auto sm:max-h-[48rem]">
+        {isLoading && <Loader />}
+        <StationMap
+          stations={stations}
+          RoutingMachine={RoutingMachine}
+          startingStation={selectedStations.starting}
+          arrivalStation={selectedStations.arrival}
+        />
+      </section>
+    </section>
   );
 };
 
@@ -152,49 +173,33 @@ interface StationMapProps {
   stations: Station[];
 }
 
-export const StationMap: FC<StationMapProps> = ({
+const StationMap: FC<StationMapProps> = ({
   stations,
   RoutingMachine,
   startingStation,
   arrivalStation,
 }) => {
   return (
-    <Card>
+    <Card className="flex justify-center items-center w-full h-full basis-72 grow aspect-square space-y-2">
       <MapContainer
-        className={
-          "h-full aspect-square w-full sm:h-screen sm:aspect-auto sm:max-h-[48rem]"
-        }
+        className="h-full w-full aspect-square z-0"
         center={[48.8566, 2.3522]}
-        zoom={13}
+        zoom={12}
+        maxZoom={18}
+        minZoom={10}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {stations.map((station, index) => (
-          <Marker
-            key={index}
-            position={[
-              station.coordonnees_geo.lat,
-              station.coordonnees_geo.lon,
-            ]}
-          >
-            <Popup>
-              <div>
-                <h3>{station.name}</h3>
-                <p>Total capacity: {station.capacity}</p>
-                <p className="flex gap-1">
-                  <Bicycle />
-                  {station.numbikesavailable} Bicycles
-                </p>
-                <p className="flex gap-1">
-                  <PCircle />
-                  {station.numdocksavailable} Places
-                </p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {startingStation && arrivalStation ? (
+          <SelectedStationMarker
+            startingStation={startingStation}
+            arrivalStation={arrivalStation}
+          />
+        ) : (
+          <StationMarkerList stations={stations} />
+        )}
         {startingStation && arrivalStation && <RoutingMachine />}
       </MapContainer>
     </Card>

@@ -14,10 +14,12 @@ export interface TravelRequestUpdate
   /**
    * ID of starting station (station code)
    */
-  startPoint: number;
+  startPoint: string;
 
   /**
    * ID of arrival station (station code)
    */
-  endPoint: number;
+  endPoint: string;
 }
+
+export type TravelRequestCreate = TravelRequestUpdate;

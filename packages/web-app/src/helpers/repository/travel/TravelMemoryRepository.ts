@@ -1,6 +1,10 @@
 import { TravelRepository } from "./TravelRepository.ts";
 import { FakeTimeout } from "../../FakeTimeout.ts";
-import { Travel, TravelRequestUpdate } from "@shared/contract/travel.ts";
+import {
+  Travel,
+  TravelRequestCreate,
+  TravelRequestUpdate,
+} from "@shared/contract/travel.ts";
 import { LoginResponse } from "@shared/contract/auth.ts";
 import { faker } from "@faker-js/faker";
 import { Station } from "../../../components/map/station-types.ts";
@@ -25,9 +29,12 @@ export class TravelMemoryRepository
   extends FakeTimeout
   implements TravelRepository
 {
-  private readonly percentageSuccessRating: number = 0.6;
+  private readonly percentageSuccessRating: number = 1;
 
-  public async create(_: Travel): Promise<void> {
+  public async create(
+    _: TravelRequestCreate,
+    __: LoginResponse["id"],
+  ): Promise<void> {
     await this.delay();
 
     if (!this.isSuccessful())
