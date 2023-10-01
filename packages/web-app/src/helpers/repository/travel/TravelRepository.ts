@@ -4,21 +4,25 @@ import { Station } from "../../../components/map/station-types.ts";
 
 export interface TravelRepository {
   getStations: () => Promise<Station[]>;
-  getAll: (userID: LoginResponse["id"]) => Promise<Travel[]>;
+  getAll: (
+    userID: LoginResponse["id"],
+    token : LoginResponse["token"]
+  ) => Promise<Travel[]>;
   getByID: (
     travelID: Travel["id"],
-    userID: LoginResponse["id"],
+    userToken: LoginResponse["token"],
   ) => Promise<Travel>;
   create: (
     travel: TravelRequestUpdate,
     userID: LoginResponse["id"],
+    userToken: LoginResponse["token"],
   ) => Promise<void>;
   update: (
     travel: TravelRequestUpdate,
-    userID: LoginResponse["id"],
+    userToken: LoginResponse["token"],
   ) => Promise<void>;
   delete: (
     travelID: Travel["id"],
-    userID: LoginResponse["id"],
+    userToken: LoginResponse["token"],
   ) => Promise<void>;
 }

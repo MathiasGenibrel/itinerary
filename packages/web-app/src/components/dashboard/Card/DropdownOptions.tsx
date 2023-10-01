@@ -3,28 +3,29 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
+} from '@nextui-org/dropdown';
+import { Button } from '@nextui-org/button';
 import {
   InfoCircle,
   Pencil,
   ThreeDotsVertical,
   Trash,
-} from "react-bootstrap-icons";
-import { useNavigate } from "react-router-dom";
-import { Travel } from "@shared/contract/travel";
-import { FC } from "react";
-import { TravelMemoryRepository } from "../../../helpers/repository/travel/TravelMemoryRepository.ts";
-import { useAuthenticatedUser } from "../../../hooks/useAuthenticatedUser.tsx";
-import { useTravelDispatcher } from "../context/useContextDispatcher.tsx";
-import { TravelReducerActionType } from "../context/TravelProvider.tsx";
-import { toast } from "sonner";
+} from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
+import { Travel } from '@shared/contract/travel';
+import { FC } from 'react';
+// import { TravelMemoryRepository } from "../../../helpers/repository/travel/TravelMemoryRepository.ts";
+import { TravelRemoteRepository } from '../../../helpers/repository/travel/TravelRemoteRepository.ts';
+import { useAuthenticatedUser } from '../../../hooks/useAuthenticatedUser.tsx';
+import { useTravelDispatcher } from '../context/useContextDispatcher.tsx';
+import { TravelReducerActionType } from '../context/TravelProvider.tsx';
+import { toast } from 'sonner';
 
 interface Props {
-  travelID: Travel["id"];
+  travelID: Travel['id'];
 }
 
-const travel = new TravelMemoryRepository();
+const travel = new TravelRemoteRepository();
 
 export const DropdownOptions: FC<Props> = ({ travelID }) => {
   const user = useAuthenticatedUser();
@@ -33,14 +34,14 @@ export const DropdownOptions: FC<Props> = ({ travelID }) => {
 
   const deleteHandler = () => {
     toast.promise(travel.delete(travelID, user.id), {
-      loading: "Deletion in progress...",
+      loading: 'Deletion in progress...',
       success: () => {
         travelDispatcher({
           type: TravelReducerActionType.DELETE,
           payload: { travel: travelID },
         });
 
-        return "Your trip has been deleted";
+        return 'Your trip has been deleted';
       },
       error: (error: Error) => {
         console.error(error);
@@ -55,11 +56,11 @@ export const DropdownOptions: FC<Props> = ({ travelID }) => {
         <Button
           className="text-tiny text-white"
           color="default"
-          variant={"light"}
+          variant={'light'}
           radius="lg"
           size="sm"
           isIconOnly
-          startContent={<ThreeDotsVertical size={16} title={"Options"} />}
+          startContent={<ThreeDotsVertical size={16} title={'Options'} />}
         ></Button>
       </DropdownTrigger>
       <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
@@ -77,7 +78,7 @@ export const DropdownOptions: FC<Props> = ({ travelID }) => {
           key="delete"
           className="text-danger"
           color="danger"
-          variant={"flat"}
+          variant={'flat'}
           startContent={<Trash />}
           onPress={deleteHandler}
         >

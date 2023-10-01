@@ -9,7 +9,6 @@ const saltRounds = parseInt(`${process.env.SALTROUNDS}`);
 
 export const registerController = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { email, username, password } = schema.register.parse(req.body);
 
     const salt = await bcrypt.genSalt(saltRounds);

@@ -83,6 +83,7 @@ app.get('/api/travel/all/:idUser', verifyTokenMiddleware, async (req: any, res) 
     const promisesInfo = allTravels.map(async (travel) => {
       if(travel && (travel.idUser == req.user.id)){
         try {
+          // console.log(`https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=-1&refine=nom_arrondissement_communes%3A%22Paris%22&refine=is_installed%3A%22OUI%22&refine=stationcode%3A%22${travel.endPoint}%22`)
           const responseStartPoint = await fetch(
             `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=-1&refine=nom_arrondissement_communes%3A%22Paris%22&refine=is_installed%3A%22OUI%22&refine=stationcode%3A%22${travel.startPoint}%22`
           );
@@ -92,7 +93,6 @@ app.get('/api/travel/all/:idUser', verifyTokenMiddleware, async (req: any, res) 
           );
           const dataStartPoint = await responseStartPoint.json();
           const dataEndPoint = await responseEndPoint.json();
-
           travel.startPoint = dataStartPoint.results[0].coordonnees_geo
           travel.endPoint = dataEndPoint.results[0].coordonnees_geo
           // delete travel.idUser;
@@ -133,6 +133,7 @@ app.post('/api/travel/update', verifyTokenMiddleware, async (req, res) => {
     .createQueryBuilder()
     .update(Travel)
     .set(travel)
+    //TODO : add verification on userId
     .where("id = :id", { id: travel.id})
     .execute()
     res.status(204).send();
