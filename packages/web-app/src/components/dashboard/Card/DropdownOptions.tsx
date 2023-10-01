@@ -14,14 +14,40 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Travel } from "@shared/contract/travel";
 import { FC } from "react";
+import { TravelMemoryRepository } from "../../../helpers/repository/travel/TravelMemoryRepository.ts";
+import { useAuthenticatedUser } from "../../../hooks/useAuthenticatedUser.tsx";
+import { useTravelDispatcher } from "../context/useContextDispatcher.tsx";
+import { TravelReducerActionType } from "../context/TravelProvider.tsx";
+import { toast } from "sonner";
 
 interface Props {
-  travelID : Travel['id']
+  travelID: Travel["id"];
 }
 
-export const DropdownOptions : FC<Props> = ({travelID}) => {
+const travel = new TravelMemoryRepository();
 
+export const DropdownOptions: FC<Props> = ({ travelID }) => {
+  const user = useAuthenticatedUser();
+  const travelDispatcher = useTravelDispatcher();
   const navigate = useNavigate();
+
+  const deleteHandler = () => {
+    toast.promise(travel.delete(travelID, user.id), {
+      loading: "Deletion in progress...",
+      success: () => {
+        travelDispatcher({
+          type: TravelReducerActionType.DELETE,
+          payload: { travel: travelID },
+        });
+
+        return "Your trip has been deleted";
+      },
+      error: (error: Error) => {
+        console.error(error);
+        return error.message;
+      },
+    });
+  };
 
   return (
     <Dropdown>
@@ -40,7 +66,11 @@ export const DropdownOptions : FC<Props> = ({travelID}) => {
         <DropdownItem key="new" startContent={<InfoCircle />}>
           Info
         </DropdownItem>
-        <DropdownItem key="copy" startContent={<Pencil />} onClick={() => navigate(`/travel/edit/${travelID}`)}>
+        <DropdownItem
+          key="copy"
+          startContent={<Pencil />}
+          onClick={() => navigate(`/travel/edit/${travelID}`)}
+        >
           Edit
         </DropdownItem>
         <DropdownItem
@@ -49,6 +79,7 @@ export const DropdownOptions : FC<Props> = ({travelID}) => {
           color="danger"
           variant={"flat"}
           startContent={<Trash />}
+          onPress={deleteHandler}
         >
           Delete route
         </DropdownItem>

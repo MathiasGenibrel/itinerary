@@ -17,5 +17,8 @@ export interface TravelRepository {
     travel: TravelRequestUpdate,
     userID: LoginResponse["id"],
   ) => Promise<void>;
-  delete: (userID: LoginResponse["id"]) => Promise<void>;
+  delete: (
+    travelID: Travel["id"],
+    userID: LoginResponse["id"],
+  ) => Promise<void>;
 }

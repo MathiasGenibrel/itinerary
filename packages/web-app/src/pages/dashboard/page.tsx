@@ -14,7 +14,6 @@ export default function Page() {
     useLoadingTravels();
 
   /* TODO add business logic
-   * - Need to validate TravelMemoryRepository
    * - Need to add toaster for PDF download
    * - Need to add each handler:
    *  - Download button handler

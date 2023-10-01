@@ -6,11 +6,39 @@ import {
   TravelRequestUpdate,
 } from "@shared/contract/travel.ts";
 import { LoginResponse } from "@shared/contract/auth.ts";
-import { fakerFR } from "@faker-js/faker";
+import { faker, fakerFR } from "@faker-js/faker";
 import { Station } from "../../../components/map/station-types.ts";
 import { stations } from "../../../mocks/stations.ts";
 
-const travels: TravelEntity[] = [];
+let travels: TravelEntity[] = [
+  {
+    id: 7309061536088064,
+    startPoint: "stationCode",
+    endPoint: "stationCode",
+    distance: "9932",
+    time: 39.728,
+    name: "Voie Lepic",
+    idUser: 1,
+  },
+  {
+    id: 2232839483424768,
+    startPoint: "stationCode",
+    endPoint: "stationCode",
+    distance: "3118.1",
+    time: 12.4724,
+    name: "Quai de la Paix",
+    idUser: 1,
+  },
+  {
+    id: 5246951532527616,
+    startPoint: "stationCode",
+    endPoint: "stationCode",
+    distance: "13260.5",
+    time: 53.042,
+    name: "Rue La Boétie",
+    idUser: 1,
+  },
+];
 
 export class TravelMemoryRepository
   extends FakeTimeout
@@ -27,18 +55,11 @@ export class TravelMemoryRepository
     if (!this.isSuccessful())
       throw new Error("An error occurred with your request, Try again later");
 
-    console.log("[TRAVEL REQUEST] : ", {
-      travel,
-      idUser: userID,
-    });
-
     travels.push({
       ...travel,
-      id: travels.length + 1,
+      id: faker.number.int(),
       idUser: userID,
     });
-
-    console.log(travels);
 
     return;
   }
@@ -56,8 +77,6 @@ export class TravelMemoryRepository
 
     if (!this.isSuccessful())
       throw new Error("An error occurred with your request, Try again later");
-
-    console.log(travels);
 
     return travels.map((travel) => ({
       id: travel.id,
@@ -111,11 +130,23 @@ export class TravelMemoryRepository
     return;
   }
 
-  public async delete(_: LoginResponse["id"]): Promise<void> {
+  public async delete(
+    travelID: Travel["id"],
+    userID: LoginResponse["id"],
+  ): Promise<void> {
     await this.delay();
 
     if (!this.isSuccessful())
       throw new Error("An error occurs with the deletion");
+
+    console.log("BEFORE", travels);
+
+    travels = travels.filter(
+      (travel) => travel.id !== travelID && travel.idUser === userID,
+    );
+
+    console.log("AFTER", travels);
+
     return;
   }
 
