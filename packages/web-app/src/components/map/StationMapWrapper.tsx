@@ -16,6 +16,7 @@ export const StationMapWrapper: FC = () => {
     arrivalStationHandler,
     startingStationHandler,
     clearHandler,
+    setDistance,
   } = useSelectedStation();
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export const StationMapWrapper: FC = () => {
           stations={stations}
           startingStation={selectedStations.starting}
           arrivalStation={selectedStations.arrival}
+          setDistance={setDistance}
         />
       </section>
     </section>

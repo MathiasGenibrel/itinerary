@@ -31,7 +31,7 @@ export const useSelectedStation = () => {
       startPoint: selectedStations.starting.stationcode,
       endPoint: selectedStations.arrival.stationcode,
       distance: String(distance),
-      time: distance / AVERAGE_BICYCLE_SPEED,
+      time: (distance / AVERAGE_BICYCLE_SPEED) * 60, // Convert calculated time to minute
     };
 
     toast.promise(travelRepository.create(inputs, auth.state.user!.id), {
@@ -65,5 +65,6 @@ export const useSelectedStation = () => {
     startingStationHandler,
     arrivalStationHandler,
     clearHandler,
+    setDistance,
   };
 };
