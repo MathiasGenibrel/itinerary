@@ -15,6 +15,15 @@
         --background-end-rgb: 0, 0, 0;
     }
 }
+
 .leaflet-routing-alt {
-    background-color: white;
+    /* background-color: white; */
+    display: none;
+}
+
+/*
+    Used to overwrite style from CARD component from NextUI lib
+ */
+.itinerary-card div:first-child {
+    max-width: 100% !important;
 }

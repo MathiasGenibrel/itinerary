@@ -16,6 +16,7 @@ import {
   GeoAlt,
   QuestionCircle,
 } from "react-bootstrap-icons";
+import { useEasterEgg } from "../../hooks/useEasterEgg.tsx";
 
 export interface Item {
   pressHandler: () => void;
@@ -27,6 +28,7 @@ export interface Item {
 }
 
 export const Header = () => {
+  const navbarEasterEgg = useEasterEgg();
   const [isOpen, toggleMenu] = useReducer((current) => !current, false);
   const navigate = useNavigate();
   const authDispatcher = useAuthDispatcher();
@@ -40,7 +42,7 @@ export const Header = () => {
   const items: Item[] = [
     {
       key: "profile",
-      pressHandler: () => navigate(ApplicationPath.DASHBOARD),
+      pressHandler: () => navigate(ApplicationPath.PROFILE),
       className: "hidden sm:flex h-14 gap-2",
       children: (
         <>
@@ -78,7 +80,11 @@ export const Header = () => {
   ];
 
   return (
-    <Navbar isMenuOpen={isOpen} onMenuOpenChange={toggleMenu}>
+    <Navbar
+      className={navbarEasterEgg}
+      isMenuOpen={isOpen}
+      onMenuOpenChange={toggleMenu}
+    >
       <NavbarBrand>
         <Link
           onPress={() => {

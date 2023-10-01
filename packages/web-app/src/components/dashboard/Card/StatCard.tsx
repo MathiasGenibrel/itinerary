@@ -1,8 +1,9 @@
 import { Card, CardBody } from "@nextui-org/card";
 import { FC, ReactElement } from "react";
+import { GeoAlt, Stopwatch } from "react-bootstrap-icons";
 
-interface Statistic {
-  value: string;
+export interface Statistic {
+  value: number;
   unit: string;
 }
 
@@ -12,10 +13,10 @@ interface Props {
   statistic: Statistic;
 }
 
-export const StatCard: FC<Props> = ({ title, icon, statistic }) => {
+const StatCard: FC<Props> = ({ title, icon, statistic }) => {
   return (
-    <Card className="basis-32 grow">
-      <CardBody className="flex flex-col items-center">
+    <Card className="basis-32 grow sm:p-8 sm:max-w-fit sm:aspect-square">
+      <CardBody className="flex flex-col items-center justify-center">
         <section className="flex justify-center gap-1">
           {icon}
           <h3 className="uppercase text-tiny text-black/60">{title}</h3>
@@ -28,5 +29,27 @@ export const StatCard: FC<Props> = ({ title, icon, statistic }) => {
         </section>
       </CardBody>
     </Card>
+  );
+};
+
+interface StatCardListProps {
+  distance: Statistic;
+  time: Statistic;
+}
+
+export const StatCardList: FC<StatCardListProps> = ({ time, distance }) => {
+  return (
+    <>
+      <StatCard
+        icon={<GeoAlt className="text-warning" size={16} />}
+        title={"distance"}
+        statistic={{ unit: distance.unit, value: distance.value }}
+      />
+      <StatCard
+        icon={<Stopwatch className="text-warning" size={16} />}
+        title={"time"}
+        statistic={{ unit: time.unit, value: time.value }}
+      />
+    </>
   );
 };

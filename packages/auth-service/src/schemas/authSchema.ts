@@ -48,15 +48,5 @@ export const schema = {
           message:
             "The password must contain at least one upper case letter, one lower case letter, one number and one special character (@$!%*?&.-_).",
         }),
-      confirm: z.string().trim().min(MIN_PASSWORD_LENGTH).max(64),
     })
-    .refine((data) => data.password === data.confirm, {
-      message: "Passwords don't match",
-      path: ["confirm"],
-    }),
-
-  profile: z.object({
-    email: z.string().email(),
-    username: z.string().max(64),
-  }),
 };
