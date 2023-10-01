@@ -33,7 +33,7 @@ export const DropdownOptions: FC<Props> = ({ travelID }) => {
   const navigate = useNavigate();
 
   const deleteHandler = () => {
-    toast.promise(travel.delete(travelID, user.id), {
+    toast.promise(travel.delete(travelID, user.token), {
       loading: 'Deletion in progress...',
       success: () => {
         travelDispatcher({

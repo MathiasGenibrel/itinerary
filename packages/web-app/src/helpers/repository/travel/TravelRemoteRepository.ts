@@ -83,9 +83,9 @@ export class TravelRemoteRepository implements TravelRepository{
     travelID: Travel["id"],
     userToken: LoginResponse["token"],
   ): Promise<void> {
-    await fetch(`http://localhost:4001/api/delete/${travelID}`,
+    await fetch(`http://localhost:4001/api/travel/delete/${travelID}`,
     {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': userToken
