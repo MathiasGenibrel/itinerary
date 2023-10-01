@@ -1,7 +1,7 @@
 import express, {} from 'express';
 import { DataSource } from "typeorm"
 import { Travel } from './db/Entities/Travel'
-import { verifyTokenMiddleware } from '../verifyToken'
+import { verifyTokenMiddleware } from './verifyToken'
 
 // import travelRouter from './router/TravelRouter'
 const app = express();

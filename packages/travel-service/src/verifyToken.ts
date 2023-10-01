@@ -41,5 +41,3 @@ export function verifyTokenMiddleware(req : any, res : any, next : NextFunction)
     });
 }
 
-module.exports = verifyTokenMiddleware
-
