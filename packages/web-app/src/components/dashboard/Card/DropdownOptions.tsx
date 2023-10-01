@@ -11,8 +11,18 @@ import {
   ThreeDotsVertical,
   Trash,
 } from "react-bootstrap-icons";
+import { useNavigate } from "react-router-dom";
+import { Travel } from "@shared/contract/travel";
+import { FC } from "react";
 
-export const DropdownOptions = () => {
+interface Props {
+  travelID : Travel['id']
+}
+
+export const DropdownOptions : FC<Props> = ({travelID}) => {
+
+  const navigate = useNavigate();
+
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -30,7 +40,7 @@ export const DropdownOptions = () => {
         <DropdownItem key="new" startContent={<InfoCircle />}>
           Info
         </DropdownItem>
-        <DropdownItem key="copy" startContent={<Pencil />}>
+        <DropdownItem key="copy" startContent={<Pencil />} onClick={() => navigate(`/travel/edit/${travelID}`)}>
           Edit
         </DropdownItem>
         <DropdownItem

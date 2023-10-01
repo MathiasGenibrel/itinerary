@@ -38,7 +38,7 @@ const TravelCard: FC<Props> = ({ travel }) => {
           >
             Download
           </Button>
-          <DropdownOptions />
+          <DropdownOptions travelID={travel.id} />
         </section>
       </CardFooter>
     </Card>

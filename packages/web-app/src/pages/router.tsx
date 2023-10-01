@@ -7,6 +7,7 @@ import Profile from "./profile/page.tsx";
 import Help from "./help/page.tsx";
 import { Layout } from "../components/layout/Layout.tsx";
 import { ProtectedRoute } from "./ProtectedRoute.tsx";
+import TravelEdit from "./travel_edit/page.tsx";
 
 export enum ApplicationPath {
   HOME = "/",
@@ -15,6 +16,7 @@ export enum ApplicationPath {
   DASHBOARD = "/dashboard",
   PROFILE = "/profile",
   HELP = "/help",
+  TRAVEL_EDIT = "/travel/edit/:id",
 }
 
 export const router = createBrowserRouter([
@@ -49,6 +51,10 @@ export const router = createBrowserRouter([
           {
             path: ApplicationPath.HELP,
             element: <Help />,
+          },
+          {
+            path: ApplicationPath.TRAVEL_EDIT,
+            element: <TravelEdit />,
           },
         ],
       },
