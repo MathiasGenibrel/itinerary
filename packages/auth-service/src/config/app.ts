@@ -7,7 +7,7 @@ import swaggerSpec from './../swagger';
 
 export function configureExpressApp(app: Router) {
   const corsOptions = {
-    origin: process.env.CORSORIGIN,
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
