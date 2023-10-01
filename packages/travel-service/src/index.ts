@@ -35,6 +35,7 @@ const travelRepository = AppDataSource.getRepository(Travel)
 // app.use('/api/travel', travelRouter)
 
 app.get('/api/bike-data', async (req, res) => {
+  //TODO: check inputs
   try {
     const response = await fetch(
       'https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=-1&refine=nom_arrondissement_communes%3A%22Paris%22&refine=is_installed%3A%22OUI%22'
@@ -48,6 +49,7 @@ app.get('/api/bike-data', async (req, res) => {
 });
 
 app.get('/api/travel/:id', verifyTokenMiddleware, async (req : any, res) => {
+  //TODO: check inputs
   try {
     const travel = await travelRepository.findOneBy({id: Number(req.params.id)})
     if(travel && (travel.idUser == req.user.id)){
@@ -122,7 +124,7 @@ app.post('/api/travel/save', verifyTokenMiddleware, async (req, res) => {
 });
 
 app.post('/api/travel/update', verifyTokenMiddleware, async (req, res) => {
-//   //TODO: check inputs
+  //TODO: check inputs
   const travel: Travel = {
     ...req.body.travel
   }
