@@ -1,9 +1,10 @@
-import express, { Request, Response } from 'express';
+// controllers/mapController.ts
+
+import { Request, Response } from 'express';
+// import { generatePdfFromHtml } from '../services/mapService';
 import puppeteer from 'puppeteer';
 
-const router = express.Router();
-
-router.post('/generate-map', async (req: Request, res: Response) => {
+export const generateMap = async (req: Request, res: Response) => {
   const jsonData = req.body;
 
   if (!jsonData || !jsonData.points || !Array.isArray(jsonData.points)) {
@@ -41,7 +42,8 @@ router.post('/generate-map', async (req: Request, res: Response) => {
 
         // Fonction pour initialiser la carte Leaflet avec les données JSON
         function initMap() {
-            const map = L.map('map').setView([48.8566, 2.3522], 10); // Centrez la carte à une position de départ
+          const firstPoint = jsonData.points[0];
+            const map = L.map('map').setView([parseFloat(firstPoint.lat), parseFloat(firstPoint.lon)], 10); // Centrez la carte à une position de départ
 
             // Ajoutez une couche de tuiles OpenStreetMap à la carte
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -55,7 +57,7 @@ router.post('/generate-map', async (req: Request, res: Response) => {
             });
 
             // Ajustez le zoom de la carte Leaflet (par exemple, à un zoom de 10)
-            map.setZoom(10); // Vous pouvez personnaliser le niveau de zoom ici
+            map.setZoom(14); // Vous pouvez personnaliser le niveau de zoom ici
         }
 
         // Appelez la fonction d'initialisation de la carte lorsque la page est chargée
@@ -82,8 +84,4 @@ router.post('/generate-map', async (req: Request, res: Response) => {
     console.error('Erreur lors de la génération du PDF :', error);
     res.status(500).json({ status: 'Erreur', message: 'Erreur lors de la génération du PDF' });
   }
-});
-
-
-export default router;
-
+}

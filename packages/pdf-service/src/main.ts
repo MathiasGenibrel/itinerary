@@ -1,13 +1,15 @@
+// main.ts
+
 import express from 'express';
-import mapController from './controllers/mapController';
+import mapRoutes from './routes/mapRoutes';
 
 const app = express();
 
 // Middleware pour parser le corps des requêtes en JSON
 app.use(express.json());
 
-
-app.use('/', mapController);
+// Montez vos routes
+app.use('/api/map', mapRoutes);
 
 // Autres routes et configurations
 
