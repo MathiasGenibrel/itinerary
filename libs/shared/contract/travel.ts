@@ -22,4 +22,7 @@ export interface TravelRequestUpdate
   endPoint: string;
 }
 
-export type TravelRequestCreate = TravelRequestUpdate;
+export interface TravelRequestCreate {
+  travel: Travel
+  idUser: number;
+}
