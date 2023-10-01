@@ -1,6 +1,6 @@
 import { Station } from "./station-types.ts";
-import { ChangeEvent, FC, useState } from "react";
-import { Select, Selection, SelectItem } from "@nextui-org/react";
+import { FC } from "react";
+import { Select, SelectItem } from "@nextui-org/react";
 
 interface Props {
   label: string;
@@ -15,23 +15,14 @@ export const StationSelector: FC<Props> = ({
   selectHandler,
   selectedStation,
 }) => {
-  const [value, setValue] = useState<Selection>(new Set([]));
-
-  const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log("[TARGET VALUE]: ", e.target.value);
-    setValue(new Set([e.target.value]));
-  };
-
-  console.log(value);
-  console.log(selectedStation?.stationcode);
-
   return (
     <Select
       label={label}
       placeholder="Select a station"
       className="flex w-full"
-      selectedKeys={new Set(selectedStation?.stationcode ?? [])}
-      onChange={handleSelectionChange}
+      selectedKeys={
+        new Set(selectedStation ? [selectedStation?.stationcode] : [])
+      }
     >
       {stations.map((station) => (
         <SelectItem
