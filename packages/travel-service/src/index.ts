@@ -47,6 +47,33 @@ app.get('/api/bike-data', async (req, res) => {
   }
 });
 
+app.get('/api/travel/:id', verifyTokenMiddleware, async (req : any, res) => {
+  try {
+    const travel = await travelRepository.findOneBy({id: Number(req.params.id)})
+    if(travel && (travel.idUser == req.user.id)){
+      try {
+        const responseStartPoint = await fetch(
+          `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=-1&refine=nom_arrondissement_communes%3A%22Paris%22&refine=is_installed%3A%22OUI%22&refine=stationcode%3A%22${travel.startPoint}%22`
+        );
+
+        const responseEndPoint = await fetch(
+          `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=-1&refine=nom_arrondissement_communes%3A%22Paris%22&refine=is_installed%3A%22OUI%22&refine=stationcode%3A%22${travel.endPoint}%22`
+        );
+        const dataStartPoint = await responseStartPoint.json();
+        const dataEndPoint = await responseEndPoint.json();
+
+        travel.startPoint = dataStartPoint.results[0].coordonnees_geo
+        travel.endPoint = dataEndPoint.results[0].coordonnees_geo
+        // delete travel.idUser;
+      } catch (error) {
+        console.error('Error fetching bike data', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+      res.status(200).json(travel);
+    } else res.status(401).send();
+  } catch (error) { res.status(500).json({ error: 'Internal server error' });}
+})
+
 app.get('/api/travel/all/:idUser', verifyTokenMiddleware, async (req, res) => {
   //TODO: check inputs
   try {
@@ -80,17 +107,10 @@ app.get('/api/travel/all/:idUser', verifyTokenMiddleware, async (req, res) => {
 
 app.post('/api/travel/save', verifyTokenMiddleware, async (req, res) => {
   //TODO: check inputs
-  // let travel = new Travel();
   const travel: Travel = {
     ...req.body.travel,
-    idUser: Number(req.body.idUser)
+    idUser: req.body.idUser
   }
-  // travel.name = req.body.name
-  // travel.startPoint = req.body.startPoint
-  // travel.endPoint = req.body.endPoint
-  // travel.distance = req.body.distance
-  // travel.time = req.body.time
-  // travel.idUser =  Number(req.body.idUser)
   try {
     await travelRepository.save(travel);
     res.status(201).send();
@@ -99,15 +119,8 @@ app.post('/api/travel/save', verifyTokenMiddleware, async (req, res) => {
   }
 });
 
-app.post('/api/travel/update', async (req, res) => {
+app.post('/api/travel/update', verifyTokenMiddleware, async (req, res) => {
 //   //TODO: check inputs
-  // const travel = new Travel();
-  // travel.name = req.body.name
-  // travel.startPoint = req.body.startPoint
-  // travel.endPoint = req.body.endPoint
-  // travel.distance = req.body.distance
-  // travel.time = req.body.time
-  // travel.idUser =  Number(req.body.idUser)
   const travel: Travel = {
     ...req.body.travel
   }
@@ -125,12 +138,21 @@ app.post('/api/travel/update', async (req, res) => {
   }
 });
 
-app.delete('/api/travel/delete/:id', async (req, res) => {
+app.delete('/api/travel/delete/:id', verifyTokenMiddleware, async (req : any, res) => {
   //TODO: check inputs
   try {
-    await travelRepository.delete({id: Number(req.params.id)});
-    res.status(204).send();
-  } catch (error) {
+    const travel = await travelRepository.findOneBy({id: Number(req.params.id)})
+    if(travel && (travel.idUser == req.user.id)){
+    try {
+      await travelRepository.delete({id: Number(req.params.id)});
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).send();
+    }
+    } else {
+      res.status(401).send();
+    }
+  } catch (error) { 
     res.status(500).send();
   }
 });

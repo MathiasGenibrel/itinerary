@@ -58,6 +58,6 @@ export const profileDeleteController = async (req: Request, res: Response) => {
 };
 
 export const verifyTokenController = async (req: Request, res: Response) => {
-    res.send(true);
+    res.status(200).json(req.user);
 };
   
