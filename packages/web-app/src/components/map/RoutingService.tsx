@@ -1,5 +1,5 @@
 import { Station } from "./station-types.ts";
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import L, { LatLng } from "leaflet";
 import "leaflet-routing-machine";
 import { createControlComponent } from "@react-leaflet/core";
@@ -8,6 +8,7 @@ import { useMap } from "react-leaflet";
 interface Props {
   starting: Station;
   arrival: Station;
+  setDistance: Dispatch<SetStateAction<number>>;
 }
 
 interface Instruction {
@@ -40,7 +41,11 @@ interface Route {
   waypointIndice: number[];
 }
 
-export const RoutingService: FC<Props> = ({ starting, arrival }) => {
+export const RoutingService: FC<Props> = ({
+  starting,
+  arrival,
+  setDistance,
+}) => {
   const map = useMap();
   const createRoutineMachineLayer = () => {
     const instance = L.Routing.control({
@@ -63,12 +68,10 @@ export const RoutingService: FC<Props> = ({ starting, arrival }) => {
 
     // Event lister on routesfound event.
     instance.on("routesfound", ({ routes }: { routes: Route[] }) => {
-      console.log(routes);
       // At present, we only take the first route into account, and don't offer the other paths to the user.
-      const [route] = routes;
-      const summary = route.summary;
+      const [{ summary }] = routes;
 
-      console.log("SUMMARY: ", summary);
+      setDistance(summary.totalDistance);
     });
 
     return instance;

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Station } from "./station-types.ts";
+import { Station } from "../station-types.ts";
 import { toast } from "sonner";
-import { TravelRepository } from "../../helpers/repository/travel/TravelRepository.ts";
-import { TravelMemoryRepository } from "../../helpers/repository/travel/TravelMemoryRepository.ts";
+import { TravelRepository } from "../../../helpers/repository/travel/TravelRepository.ts";
+import { TravelMemoryRepository } from "../../../helpers/repository/travel/TravelMemoryRepository.ts";
 
 const travelRepository: TravelRepository = new TravelMemoryRepository();
 

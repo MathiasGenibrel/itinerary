@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Card } from "@nextui-org/card";
@@ -11,12 +11,14 @@ interface StationMapProps {
   stations: Station[];
   startingStation: Station | null;
   arrivalStation: Station | null;
+  setDistance: Dispatch<SetStateAction<number>>;
 }
 
 export const StationMap: FC<StationMapProps> = ({
   stations,
   startingStation,
   arrivalStation,
+  setDistance,
 }) => {
   return (
     <Card className="flex justify-center items-center w-full h-full basis-72 grow aspect-square space-y-2">
@@ -40,6 +42,7 @@ export const StationMap: FC<StationMapProps> = ({
             <RoutingService
               starting={startingStation}
               arrival={arrivalStation}
+              setDistance={setDistance}
             />
           </>
         ) : (
